@@ -1,7 +1,7 @@
 # PICO-56
 My [HBC-56](https://github.com/visrealm/hbc-56) (a 65C02/TMS9918A homebrew computer on a backplane) fully emulated on a Raspberry Pi Pico.
 
-<p align="center"><img src="img/thumb.png" alt="HBC-56" width="640px"></p>
+<p align="center"><a href="https://github.com/visrealm/hbc-56"><img src="img/thumb.png" alt="HBC-56" width="640px"></a></p>
 
 Making use of my various emulation libraries:
 
