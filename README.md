@@ -1,7 +1,7 @@
 # PICO-56
 My [HBC-56](https://github.com/visrealm/hbc-56) (a 65C02/TMS9918A homebrew computer on a backplane) fully emulated on a Raspberry Pi Pico.
 
-<p align="center"><a href="https://github.com/visrealm/hbc-56"><img src="img/thumb.png" alt="HBC-56" width="640px"></a></p>
+<p align="left"><a href="https://github.com/visrealm/hbc-56"><img src="img/thumb.png" alt="HBC-56" width="720px"></a></p>
 
 Making use of my various emulation libraries:
 
@@ -15,9 +15,9 @@ Follow along on YouTube here: [https://www.youtube.com/@TroySchrapel](https://ww
 
 ### Thanks
 
-Thanks to PCBWay for supporting this project.
+Thanks to [PCBWay](https://pcbway.com/g/186WQ9) for supporting this project.
 
-[![PCBWay](/img/pcbway_sm.png)](https://pcbway.com/g/186WQ9)
+<p align="left"><a href=https://pcbway.com/g/186WQ9"><img src="img/pcb02.jpg" alt="PICO-56" width="720px"></a></p>
 
 ## License
 This code is licensed under the [MIT](https://opensource.org/licenses/MIT "MIT") license
