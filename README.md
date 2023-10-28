@@ -13,11 +13,15 @@ This is the placeholder repository for the up-coming video series covering the d
 
 Follow along on YouTube here: [https://www.youtube.com/@TroySchrapel](https://www.youtube.com/@TroySchrapel)
 
+### Schematics
+
+<p align="left"><a href="schematics"><img src="schematics/Schematic_Pico56_v1_2.png" alt="PICO-56 v1.2" width="720px"></a></p>
+
 ### Thanks
 
 Thanks to [PCBWay](https://pcbway.com/g/186WQ9) for supporting this project.
 
-<p align="left"><a href=https://pcbway.com/g/186WQ9"><img src="img/pcb02.jpg" alt="PICO-56" width="720px"></a></p>
+<p align="left"><a href="https://pcbway.com/g/186WQ9"><img src="img/pcb02.jpg" alt="PICO-56" width="720px"></a></p>
 
 ## License
 This code is licensed under the [MIT](https://opensource.org/licenses/MIT "MIT") license
