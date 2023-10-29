@@ -1,6 +1,6 @@
 # Schematics
 
-Version 1.2 of the schematic is avilable now. 
+Version 1.2 of the schematic is available now. 
 
 ![Schematic_Pico56_v1_2.png](/schematics/Schematic_Pico56_v1_2.png)
 
