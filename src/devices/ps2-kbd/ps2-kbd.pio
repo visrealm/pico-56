@@ -1,0 +1,152 @@
+/*
+ * Project: pico-56 - PS/2 keyboard
+ *
+ * Copyright (c) 2023 Troy Schrapel
+ *
+ * This code is licensed under the MIT license
+ *
+ * https://github.com/visrealm/pico-56
+ *
+ */
+ 
+ 
+/*
+ * #define PS2_DATA        0    in/out
+ * #define PS2_CLK         1    in/out
+ */
+
+.program ps2kbd
+
+.wrap_target
+main:
+  set pins,    0b00
+  set pindirs, 0b00
+
+mainLoop:
+  jmp !osre doWrite
+  jmp pin mainLoop    ; if clock is high, loop. otherwise, we're about to read something
+
+  set x, 10
+
+readLoop:
+  wait 0 pin 1
+  in pins, 1
+  wait 1 pin 1
+  jmp x-- readLoop
+  jmp main
+
+doWrite:
+  set pindirs, 0b10 [31]
+  set pindirs, 0b11 [5]
+  set pindirs, 0b01
+  set x, 10
+writeLoop:
+  wait 0 pin 1 [2]
+  out pindirs, 1
+  wait 1 pin 1 [1]
+  jmp x-- writeLoop
+  out null 21
+
+.wrap
+
+
+
+
+
+% c-sdk {
+
+static PIO ps2kbd_pio = pio1;
+static uint8_t ps2kbd_sm = -1;
+
+bool ps2kbd_begin(uint8_t clkPin, uint8_t dataPin) {
+
+  if (pio_can_add_program(ps2kbd_pio, &ps2kbd_program) &&
+      ((ps2kbd_sm = pio_claim_unused_sm(ps2kbd_pio, true)) >= 0)) {
+    uint offset = pio_add_program(ps2kbd_pio, &ps2kbd_program);
+    pio_sm_config c = ps2kbd_program_get_default_config(offset);
+
+    pio_gpio_init(ps2kbd_pio, clkPin);
+    pio_gpio_init(ps2kbd_pio, dataPin);
+    sm_config_set_in_pins(&c, dataPin);
+    sm_config_set_set_pins(&c, dataPin, 2);
+    sm_config_set_out_pins(&c, dataPin, 1);
+    sm_config_set_jmp_pin(&c, clkPin);
+
+    pio_sm_set_pindirs_with_mask(ps2kbd_pio, ps2kbd_sm,
+                                 0, // Outputs
+                                 (1 << clkPin) | (1 << dataPin)); // All pins*/
+
+    sm_config_set_in_shift(&c, true, true, 11);  // R shift, autopush @ 11 bits
+    sm_config_set_out_shift(&c, true, true, 32); // R shift, autopull @ 12 bits
+
+    sm_config_set_clkdiv(&c, 1000.0);
+
+    pio_sm_clear_fifos(ps2kbd_pio, ps2kbd_sm);
+
+    pio_sm_init(ps2kbd_pio, ps2kbd_sm, offset, &c);
+    pio_sm_set_enabled(ps2kbd_pio, ps2kbd_sm, true);
+
+    return true; // Success
+  }
+  return false;
+}
+
+void ps2kbd_write(uint8_t value);
+
+uint8_t ps2kbd_read() {
+  if (!pio_sm_is_rx_fifo_empty(ps2kbd_pio, ps2kbd_sm))
+  {
+    uint32_t value32 = pio_sm_get_blocking(ps2kbd_pio, ps2kbd_sm);
+    value32 >>= 21;
+
+    uint8_t value = (value32 >> 1) & 0xff; 
+
+    if (value == 0xaa)
+    {
+      sleep_us(350);
+      ps2kbd_write(0xfa);
+      return value;
+    }
+    else if (value == 0xfe)
+    {
+      return value;
+      // resend?
+    }
+    else if (value == 0xfa)
+    {
+      return value;
+      // ack
+    }
+    else
+    {
+      return value;
+    }
+   }
+
+   return 0;
+}
+
+
+void ps2kbd_write(uint8_t value) {
+  uint32_t value32 = value;
+  
+  uint8_t bitsSet = 0;
+  for (int i = 0; i < 8; ++i)
+  {
+    bitsSet += ((value >> i) & 0x01);
+  }
+
+  value32 |= 0x600;
+  if ((bitsSet & 0x01) == 0)
+  {
+    value32 |= 0x100;
+    printf("Even bits. Setting parity\n");
+  }
+
+  pio_sm_put_blocking(ps2kbd_pio, ps2kbd_sm, (~value32));
+
+  printf("Queued orig: %08x inv: %08x\n", value32, (~value32));
+
+}
+
+%}

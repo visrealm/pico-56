@@ -1,0 +1,15 @@
+[submodule "submodules/vrEmuTms9918"]
+	path = submodules/vrEmuTms9918
+	url = https://github.com/visrealm/vrEmuTms9918.git
+[submodule "submodules/vrEmu6502"]
+	path = submodules/vrEmu6502
+	url = https://github.com/visrealm/vrEmu6502.git
+[submodule "submodules/vrEmu6522"]
+	path = submodules/vrEmu6522
+	url = https://github.com/visrealm/vrEmu6522.git
+[submodule "submodules/sdcard"]
+	path = submodules/sdcard
+	url = https://github.com/visrealm/no-OS-FatFS-SD-SDIO-SPI-RPi-Pico.git
+[submodule "submodules/emu2149"]
+	path = submodules/emu2149
+	url = https://github.com/visrealm/emu2149.git

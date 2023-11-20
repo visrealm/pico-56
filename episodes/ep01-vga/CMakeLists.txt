@@ -1,0 +1,15 @@
+set(EPISODE ep01-vga)
+
+add_subdirectory(${EPISODE}-00-sync)
+add_subdirectory(${EPISODE}-01-rgb)
+add_subdirectory(${EPISODE}-02-testpatt)
+add_subdirectory(${EPISODE}-03-sine)
+add_subdirectory(${EPISODE}-04-boing)
+add_subdirectory(${EPISODE}-05-nyancat)
+add_subdirectory(${EPISODE}-06-framebuffer)
+add_subdirectory(${EPISODE}-07-framebuffer-640)
+add_subdirectory(${EPISODE}-08-framebuffer-800)
+add_subdirectory(${EPISODE}-08b-image-800)
+add_subdirectory(${EPISODE}-09-slideshow)
+add_subdirectory(${EPISODE}-10-library)
+

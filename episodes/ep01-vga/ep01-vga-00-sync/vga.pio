@@ -1,0 +1,43 @@
+/*
+ * Project: pico-56 - episode 1
+ *
+ * Copyright (c) 2023 Troy Schrapel
+ *
+ * This code is licensed under the MIT license
+ *
+ * https://github.com/visrealm/pico-56
+ *
+ */
+
+
+; vga_sync - provides the vga hsync and vsync signals
+;
+; sync data passed-in via dma. each scanline will have four records
+; one for active, front porch, sync and back porch sections 
+;
+; +-------------------------+---------+---------+----------------------+
+; |         31 - 16         |   15    |   14    |        13 - 0        |
+; |       instruction       |  vsync  |  hsync  |         delay        |
+; +-------------------------+---------+---------+----------------------+
+;
+; instruction: an instruction to run at the start of each segment (usually nop)
+; vsync      : vsync signal (1 for high)
+; hsync      : vsync signal (1 for high)
+; delay      : time in pio ticks to hold the current sync configuration
+
+.program vga_sync
+
+.define public SETUP_OVERHEAD     5 ; pio ticks between segments
+.define public WORD_SYNC_OFFSET  14 ; bit offset to sync data
+.define public WORD_EXEC_OFFSET  16 ; bit offset to instruction data
+.define        WORD_DELAY_BITS   14
+.define        WORD_SYNC_BITS     2
+.define        WORD_EXEC_BITS    16
+
+    ; auto-pull
+    out x, WORD_DELAY_BITS    ; setup delay
+    out pins, WORD_SYNC_BITS  ; output sync pins
+    out exec, WORD_EXEC_BITS  ; execute given instruction
+loop:
+    jmp x-- loop              ; fulfil the delay
+.wrap
