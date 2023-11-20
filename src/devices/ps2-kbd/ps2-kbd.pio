@@ -140,13 +140,9 @@ void ps2kbd_write(uint8_t value) {
   if ((bitsSet & 0x01) == 0)
   {
     value32 |= 0x100;
-    printf("Even bits. Setting parity\n");
   }
 
   pio_sm_put_blocking(ps2kbd_pio, ps2kbd_sm, (~value32));
-
-  printf("Queued orig: %08x inv: %08x\n", value32, (~value32));
-
 }
 
 %}

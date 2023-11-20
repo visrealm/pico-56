@@ -46,6 +46,9 @@ static VrEmu6502* cpu = NULL;
 static VrEmu6522* via = NULL;
 static VrEmuTms9918* tms9918 = NULL;
 
+#define PS2_DATA_GPIO  14
+#define PS2_CLOCK_GPIO 15
+
 #define NES_LATCH_GPIO 26
 #define NES_CLOCK_GPIO 22
 #define NES1_DATA_GPIO 27
@@ -63,6 +66,46 @@ uint8_t busRead(uint16_t addr, bool isDbg);
 /* called at the end of each frame */
 static void endOfFrameCb(uint64_t frameNumber)
 {
+  static uint8_t lastCode = 0;
+  static bool capsOn = false; // 4
+  static bool numOn = false;  // 2
+  static bool scrollOn = false; //1
+
+  static uint8_t writeQueue[2] = { 0, 0 };
+  static uint8_t writeQueueSize = 0;
+
+  if (writeQueueSize)
+  {
+    ps2kbd_write(writeQueue[--writeQueueSize]);
+    writeQueue[writeQueueSize] = 0;
+  }
+  else
+  {
+    // update keyboard state
+    uint8_t kbdScancode = ps2kbd_read();
+    if (kbdScancode != 0)
+    {
+      kbdQueuePush(kbdScancode);
+
+      if (lastCode != 0xf0)
+      {
+        if (kbdScancode == 0x58 ||  // caps
+          kbdScancode == 0x7e ||  // scroll
+          kbdScancode == 0x77)  // num
+        {
+          if (kbdScancode == 0x58) capsOn = !capsOn;
+          if (kbdScancode == 0x7e) scrollOn = !scrollOn;
+          if (kbdScancode == 0x77) numOn = !numOn;
+          writeQueue[0] = (capsOn ? 0x04 : 0x00) | (scrollOn ? 0x01 : 0x00) | (numOn ? 0x02 : 0x00);
+          writeQueue[1] = 0xed;
+          writeQueueSize = 2;
+        }
+      }
+      lastCode = kbdScancode;
+    }
+  }
+
+  // update nes state
   nes_read_finish();
   nes_read_start();
 }
@@ -72,17 +115,24 @@ static void endOfFrameCb(uint64_t frameNumber)
 */
 void busInit()
 {
+  // 65C02 cpu
   cpu = vrEmu6502New(CPU_W65C02, busRead, busWrite);
 
+  // 65C22 VIA
   via = vrEmu6522New(VIA_65C22);
 
+  // TMS9918A VDP
   tms9918 = tmsInit();
   tmsSetFrameCallback(endOfFrameCb);
+
+  // Dual AY-3-8910 PSGs
+  audioInit(HBC56_AY38910_CLOCK, tmsGetHsyncFreq());
   tmsSetHsyncCallback(audioUpdate);
 
-  audioInit(HBC56_AY38910_CLOCK, tmsGetHsyncFreq());
+  // PS/2 keyboard
+  ps2kbd_begin(PS2_CLOCK_GPIO, PS2_DATA_GPIO);
 
-  ps2kbd_begin(15, 14);
+  // dual NES controllers
   nes_begin(NES_CLOCK_GPIO, NES1_DATA_GPIO, NES_LATCH_GPIO);
   nes_read_start();
 }
@@ -92,84 +142,51 @@ void busInit()
  */
 void busMainLoop()
 {
+  /* reset the cpu (technically don't need to do this as vrEmu6502New does reset it) */
   vrEmu6502Reset(cpu);
 
-  double burstCount = 0;
-  int charPos = 0;
-  bool hasConnected = false;
+  absolute_time_t startTime = get_absolute_time();
+  absolute_time_t currentTime = startTime;
 
-  if (cpu)
+  int i = 0;
+  int prevViaInt = IntCleared;
+
+  // loop forever
+  while (1)
   {
-    /* reset the cpu (technically don't need to do this as vrEmu6502New does reset it) */
-    vrEmu6502Reset(cpu);
 
-    absolute_time_t startTime = get_absolute_time();
-    absolute_time_t currentTime = startTime;
-
-    int i = 0;
-    int prevViaInt = IntCleared;
-
-    while (1)
+    // run the cpu for a number of ticks
+    while (i < TICKS_PER_BURST)
     {
-      while (i < TICKS_PER_BURST)
+      int cycleTicks = vrEmu6502InstCycle(cpu);
+      if (vrEmu6502GetCurrentOpcode(cpu) == CPU_6502_WAI)
       {
-        int cycleTicks = vrEmu6502InstCycle(cpu);
-        if (vrEmu6502GetCurrentOpcode(cpu) == CPU_6502_WAI)
-        {
-          i += TICKS_PER_BURST;
-          break;
-        }
-        i += cycleTicks;
+        i += TICKS_PER_BURST;
+        break;
       }
-      i -= TICKS_PER_BURST;
-
-      vrEmu6522Ticks(via, TICKS_PER_BURST);
-
-      setOrClearInterrupt(HBC56_VIA_IRQ, *vrEmu6522Int(via) == IntRequested);
-
-      static uint8_t lastCode = 0;
-      uint8_t kbdScancode = ps2kbd_read();
-      static bool capsOn = false; // 4
-      static bool numOn = false;  // 2
-      static bool scrollOn = false; //1
-
-      if (kbdScancode != 0)
-      {
-        kbdQueuePush(kbdScancode);
-
-        if (lastCode != 0xf0)
-        {
-          if (kbdScancode == 0x58 ||  // caps
-            kbdScancode == 0x7e ||  // scroll
-            kbdScancode == 0x77)  // num
-          {
-            if (kbdScancode == 0x58) capsOn = !capsOn;
-            if (kbdScancode == 0x7e) scrollOn = !scrollOn;
-            if (kbdScancode == 0x77) numOn = !numOn;
-            sleep_ms(10);
-            ps2kbd_write(0xed);
-            sleep_ms(10);
-            ps2kbd_write((capsOn ? 0x04 : 0x00) | (scrollOn ? 0x01 : 0x00) | (numOn ? 0x02 : 0x00));
-          }
-        }
-        lastCode = kbdScancode;
-      }
-
-      *(vrEmu6502Int(cpu)) = intReg() ? IntRequested : IntCleared;
-
-      currentTime = delayed_by_us(currentTime, MICROSECONDS_PER_BURST);
-      if (currentTime < get_absolute_time())
-      {
-        currentTime = get_absolute_time();
-      }
-      else
-      {
-        busy_wait_until(currentTime);
-      }
+      i += cycleTicks;
     }
+    i -= TICKS_PER_BURST;
 
-    vrEmu6502Destroy(cpu);
-    cpu = NULL;
+    // run the via for a number of ticks
+    vrEmu6522Ticks(via, TICKS_PER_BURST);
+
+    // has the via interrupted?
+    setOrClearInterrupt(HBC56_VIA_IRQ, *vrEmu6522Int(via) == IntRequested);
+
+    // set cpu interrupt
+    *(vrEmu6502Int(cpu)) = intReg() ? IntRequested : IntCleared;
+
+    // delay or continue immediately to keep cpu clock
+    currentTime = delayed_by_us(currentTime, MICROSECONDS_PER_BURST);
+    if (currentTime < get_absolute_time())
+    {
+      currentTime = get_absolute_time();
+    }
+    else
+    {
+      busy_wait_until(currentTime);
+    }
   }
 }
 

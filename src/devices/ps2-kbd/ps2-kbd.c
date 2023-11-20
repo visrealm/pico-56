@@ -156,24 +156,24 @@ bool isShifted = false;
 bool isControlled = false;
 
 
-#define   KB_QUEUE_SIZE 256
+#define   KB_QUEUE_SIZE 16
 #define   KB_QUEUE_MASK (KB_QUEUE_SIZE - 1)
 char      kbQueue[KB_QUEUE_SIZE];
 int       kbStart = 0;
 int       kbEnd = 0;
 
-extern bool kbdQueueEmpty()
+bool kbdQueueEmpty()
 {
   return kbEnd == kbStart;
 }
 
-extern void kbdQueuePush(uint8_t scancode)
+void kbdQueuePush(uint8_t scancode)
 {
   kbQueue[kbEnd++] = scancode; kbEnd &= KB_QUEUE_MASK;
   raiseInterrupt(KBD_INT);
 }
 
-extern uint8_t kbdQueuePop()
+uint8_t kbdQueuePop()
 {
   uint8_t val = kbQueue[kbStart++];
   kbStart &= KB_QUEUE_MASK;
