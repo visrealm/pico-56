@@ -58,15 +58,16 @@ static VrEmuTms9918* tms9918 = NULL;
 void busWrite(uint16_t addr, uint8_t val);
 uint8_t busRead(uint16_t addr, bool isDbg);
 
+static bool capsOn = false;   // 4
+static bool numOn = false;    // 2
+static bool scrollOn = false; // 1
+
 /*
  * called at the end of each frame
  */
 static void endOfFrameCb(uint64_t frameNumber)
 {
   static uint8_t lastCode = 0;
-  static bool capsOn = false; // 4
-  static bool numOn = false;  // 2
-  static bool scrollOn = false; //1
 
   static uint8_t writeQueue[2] = { 0, 0 };
   static uint8_t writeQueueSize = 0;
@@ -141,6 +142,13 @@ void __not_in_flash_func(busMainLoop)()
 {
   /* reset the cpu (technically don't need to do this as vrEmu6502New does reset it) */
   vrEmu6502Reset(cpu);
+
+  capsOn = numOn = scrollOn = false;
+
+  // revert keyboard 'locks'
+  ps2kbd_write(0xed);
+  sleep_ms(10);
+  ps2kbd_write(0x00);
 
   absolute_time_t startTime = get_absolute_time();
   absolute_time_t currentTime = startTime;

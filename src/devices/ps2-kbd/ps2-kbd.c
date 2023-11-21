@@ -82,16 +82,16 @@ uint8_t ps2kbd_read() {
     {
       sleep_us(350);
       ps2kbd_write(0xfa);
-      return value;
+      return 0;
     }
     else if (value == 0xfe)
     {
-      return value;
+      return 0;
       // resend?
     }
     else if (value == 0xfa)
     {
-      return value;
+      return 0;
       // ack
     }
     else

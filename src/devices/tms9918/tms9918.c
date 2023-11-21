@@ -180,7 +180,6 @@ VrEmuTms9918* tmsInit()
 
   setClosestClockFreqKhz(sysClockFreq);
 
-
   vgaInit(params);
 
   return tms;
