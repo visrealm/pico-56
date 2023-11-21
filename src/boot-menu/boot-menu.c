@@ -113,9 +113,9 @@ void renderBootMenu()
   vrEmuTms9918WriteByteRpt(tms9918, vrEmuTms9918FgBgColor(TMS_DK_BLUE, TMS_WHITE), 16);
   vrEmuTms9918WriteByteRpt(tms9918, vrEmuTms9918FgBgColor(TMS_WHITE, TMS_DK_BLUE), 16);
 
-  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS + 20 * 8);
+  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS);
   vrEmuTms9918WriteBytes(tms9918, tmsFont, tmsFontBytes);
-  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS + (128 + 20) * 8);
+  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS + 128 * 8);
   vrEmuTms9918WriteBytes(tms9918, tmsFont, tmsFontBytes);
 
   vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 + 1);
@@ -150,7 +150,6 @@ void renderBootMenu()
   vrEmuTms9918WriteData(tms9918, 32 - 3);
   vrEmuTms9918WriteByteRpt(tms9918, '~' + 1, 30);
   vrEmuTms9918WriteData(tms9918, 32 - 1);
-
 
   vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 * 22 + 3);
   vrEmuTms9918WriteString(tms9918, "github.com/visrealm/pico-56");
@@ -210,10 +209,12 @@ void runBootMenu()
   uint8_t lastScancode = 0;
   renderPage(fileList, currentIndex, currentPage);
 
+  int uiUpdateIndex = 0;
+  absolute_time_t nextUiUpdate = 0;
+
   while (status)
   {
     BootMenuInput inp = currentInput();
-
 
     if (inp == BMI_DOWN)
     {
@@ -276,6 +277,22 @@ void runBootMenu()
     else if (inp == BMI_SELECT)
     {
       break;
+    }
+
+    // update bottom message
+    absolute_time_t currentTime = get_absolute_time();
+    if (currentTime > nextUiUpdate)
+    {
+      nextUiUpdate = delayed_by_ms(currentTime, 5000);
+      vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 * 22);
+      if (++uiUpdateIndex & 0x01)
+      {
+        vrEmuTms9918WriteString(tms9918, "   github.com/visrealm/pico-56");
+      }
+      else
+      {
+        vrEmuTms9918WriteString(tms9918, "      \x13 2023 Troy Schrapel    ");
+      }
     }
   }
 
