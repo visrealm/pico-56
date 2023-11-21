@@ -18,15 +18,35 @@ Making use of my various emulation libraries (and more):
 * [vrEmu6522](https://github.com/visrealm/vrEmu6522) - 6522/65C22 VIA emulation library (C99)
 * [vrEmuTms9918](https://github.com/visrealm/vrEmuTms9918) - TMS9918A/TMS9929A VDP emulation library (C99)
 
-This is the placeholder repository for the up-coming video series covering the development of the PICO-56.
-
 Follow along on YouTube here: [youtube.com/@TroySchrapel](https://youtube.com/@TroySchrapel)
 
-### Gerbers
+## Development environment
+
+To set up your development environment for the Raspberry Pi Pico, follow the [Raspberry Pi C/C++ SDK Setup](https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html) instructions.
+
+#### Windows
+
+For Windows users, there is a pre-packaged installer provided by the Raspberry Pi Foundation: https://github.com/raspberrypi/pico-setup-windows/releases/. Once installed, just open the pre-configured "Pico - Visual Studio Code" from your start menu.
+
+## Episodes
+In the Episodes, I build the code from the ground up and provide a number of working demos. These are a work in progress with more to come as the videos come out.
+#### [Episode 1 - VGA](episodes/ep01-vga)
+In this episode, I build a VGA circuit on the Raspberry Pi Pico and write an intitial generic VGA output library and a number of VGA test programs from a test pattern through to moving sprites and an 800x600 framebuffer.
+
+[<img src="img/boing-sm.gif" height="150px"></img>](episodes/ep01-vga/ep01-vga-04-boing)  [<img src="img/nyan-sm.gif" height="150px"></img>](episodes/ep01-vga/ep01-vga-05-nyancat)  [<img src="img/framebuff-sm.gif" height="150px"></img>](episodes/ep01-vga/ep01-vga-06-framebuffer)  [<img src="img/slideshow-sm.gif" height="150px"></img>](episodes/ep01-vga/ep01-vga-09-slideshow)
+
+#### [Episode 2 - TMS9918A](episodes/ep02-tms)
+In this episode, I incorporate my TMS9918 library and create some test programs to test the TMS9918 functionality on the Pi Pico.
+
+## Gerbers
 
 Gerbers for the PICO-56 v1.2 are now available. See [/schematics](schematics)
 
-### Bill of materials
+## Schematics
+
+<p align="left"><a href="schematics"><img src="schematics/Schematic_Pico56_v1_2.png" alt="PICO-56 v1.2" width="720px"></a></p>
+
+## Bill of materials
 
 | Qty.     | Description                       | Code                              |
 |----------|-----------------------------------|-----------------------------------|
@@ -53,15 +73,20 @@ Gerbers for the PICO-56 v1.2 are now available. See [/schematics](schematics)
 | 1        | Raspberry Pi Pico (plus headers)  | U1                                |
 | 1        | MicroSD card connector            | U2                                |
 
-### Schematics
-
-<p align="left"><a href="schematics"><img src="schematics/Schematic_Pico56_v1_2.png" alt="PICO-56 v1.2" width="720px"></a></p>
-
 ### Thanks
 
 Thanks to [PCBWay](https://pcbway.com/g/186WQ9) for supporting this project.
 
 <p align="left"><a href="https://pcbway.com/g/186WQ9"><img src="img/pcb02.jpg" alt="PICO-56" width="720px"></a></p>
+
+## Resources
+
+* [Windows Development Environment Installer](https://github.com/raspberrypi/pico-setup-windows/releases)
+* [Raspberry Pi Pico C/C++ SDK (PDF)](https://datasheets.raspberrypi.com/pico/raspberry-pi-pico-c-sdk.pdf)
+* [HBC-56 Project](https://github.com/visrealm/hbc-56)
+* [vrEmu6502 - 6502 CPU Emulation Library](https://github.com/visrealm/vrEmu6502)
+* [vrEmu6522 - 6522 VIA Emulation Library](https://github.com/visrealm/vrEmu6522)
+* [vrEmuTms9918 - TMS9918A VDP Emulation Library](https://github.com/visrealm/vrEmuTms9918)
 
 ## License
 This code is licensed under the [MIT](https://opensource.org/licenses/MIT "MIT") license
