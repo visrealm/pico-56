@@ -16,7 +16,7 @@
 
 #define KBD_INT 2
 
-bool ps2kbd_begin(uint8_t clkPin, uint8_t dataPin);
+bool ps2kbd_begin();
 uint8_t ps2kbd_read();
 void ps2kbd_write(uint8_t value);
 

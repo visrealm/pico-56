@@ -14,10 +14,10 @@
 #include <inttypes.h>
 #include <stdbool.h>
 
-extern void setOrClearInterrupt(int irq, bool doSet);
+void setOrClearInterrupt(int irq, bool doSet);
 
-extern void raiseInterrupt(int irq);
+void raiseInterrupt(int irq);
 
-extern void releaseInterrupt(int irq);
+void releaseInterrupt(int irq);
 
-extern uint8_t intReg();
+uint8_t intReg();

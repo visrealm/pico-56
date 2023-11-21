@@ -12,167 +12,138 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <ctype.h>
 #include "pico/time.h"
+#include "ps2-kbd.pio.h"
 
 #include "ps2-kbd.h"
-#include "ps2-kbd.pio.h"
 #include "interrupts.h"
 
+#define PS2_DATA_GPIO  14
+#define PS2_CLOCK_GPIO 15
 
-uint8_t ascii2Ps2[128] = {
-    0,    // NUL
-    0,    // SOH
-    0,    // STX
-    0,//0x03,    // ETX
-    0,    // EOT
-    0,    // ENQ
-    0,    // ACK
-    0,    // BEL
-    0x66,    // BS
-    0x0d,    // TAB
-    0x5a,    // LF
-    0,    // VT
-    0,    // FF
-    0x5a,    // CR
-    0,    // SO
-    0,    // SI
-    0,    // DLE
-    0,    // DC1
-    0,    // DC2
-    0,    // DC3
-    0,    // DC4
-    0,    // NAK
-    0,    // SYN
-    0,    // ETB
-    0,    // CAN
-    0,    // EM
-    0,    // SUB
-    0,    // ESC
-    0,    // FS
-    0,    // GS
-    0,    // RS
-    0,    // US
-    0x29,    // SPACE
-    0x16,  // !
-    0x52,    // "
-    0x26,    // #
-    0x25,    // $
-    0x2e,    // %
-    0x3d,    // &
-    0x52,    // '
-    0x46,    // (
-    0x45,    // )
-    0x3e,    // *
-    0x55,    // +
-     0x41,    // ,
-     0x7b,    // -
-     0x49,    // .
-     0x4a,    // /
-    0x45,  // 0
-    0x16,  // 1
-    0x1e,  // 2
-    0x26,  // 3
-    0x25,  // 4
-    0x2e,  // 5
-    0x36,  // 6
-    0x3d,  // 7
-    0x3e,  // 8
-    0x46,  // 9
-    0x4c,    // :
-    0x4c,    // ;
-     0x41,    // <
-     0x55,    // =
-     0x49,    // >
-     0x4a,    // ?
-     0x1e,    // @
-    0x1c,  // A
-    0x32,  // B
-    0x21,  // C
-    0x23,  // D
-    0x24,  // E
-    0x2b,  // F
-    0x34,  // G
-    0x33,  // H
-    0x43,  // I
-    0x3b,  // J
-    0x42,  // K
-    0x4b,  // L
-    0x3a,  // M
-    0x31,  // N
-    0x44,  // O
-    0x4d,  // P
-    0x15,  // Q
-    0x2d,  // R
-    0x1b,  // S
-    0x2c,  // T
-    0x3c,  // U
-    0x2a,  // V
-    0x1d,  // W
-    0x22,  // X
-    0x35,  // Y
-    0x1a,  // Z
-    0x54,    // [
-    0x5d,    // backslash
-    0x5b,    // ]
-    0x36,    // ^
-    0x7b,    // _
-    0x0e,    // `
-    0x1c,  // A
-    0x32,  // B
-    0x21,  // C
-    0x23,  // D
-    0x24,  // E
-    0x2b,  // F
-    0x34,  // G
-    0x33,  // H
-    0x43,  // I
-    0x3b,  // J
-    0x42,  // K
-    0x4b,  // L
-    0x3a,  // M
-    0x31,  // N
-    0x44,  // O
-    0x4d,  // P
-    0x15,  // Q
-    0x2d,  // R
-    0x1b,  // S
-    0x2c,  // T
-    0x3c,  // U
-    0x2a,  // V
-    0x1d,  // W
-    0x22,  // X
-    0x35,  // Y
-    0x1a,  // Z
-    0x54,    // [
-    0x5d,    // backslash
-    0x5b,    // ]
-    0x0e,    // ~
-};
+#define KB_QUEUE_SIZE  16
+#define KB_QUEUE_MASK  (KB_QUEUE_SIZE - 1)
 
-
-uint8_t ascii2Ps2[128];
-bool isShifted = false;
-bool isControlled = false;
-
-
-#define   KB_QUEUE_SIZE 16
-#define   KB_QUEUE_MASK (KB_QUEUE_SIZE - 1)
 char      kbQueue[KB_QUEUE_SIZE];
 int       kbStart = 0;
 int       kbEnd = 0;
 
+static PIO ps2kbd_pio = pio1;
+static uint8_t ps2kbd_sm = -1;
+
+/*
+ * start PS/2 keyboard PIO
+ */
+bool ps2kbd_begin()
+{
+  if (pio_can_add_program(ps2kbd_pio, &ps2kbd_program) &&
+    ((ps2kbd_sm = pio_claim_unused_sm(ps2kbd_pio, true)) >= 0)) {
+    uint offset = pio_add_program(ps2kbd_pio, &ps2kbd_program);
+    pio_sm_config c = ps2kbd_program_get_default_config(offset);
+
+    pio_gpio_init(ps2kbd_pio, PS2_CLOCK_GPIO);
+    pio_gpio_init(ps2kbd_pio, PS2_DATA_GPIO);
+    sm_config_set_in_pins(&c, PS2_DATA_GPIO);
+    sm_config_set_set_pins(&c, PS2_DATA_GPIO, 2);
+    sm_config_set_out_pins(&c, PS2_DATA_GPIO, 1);
+    sm_config_set_jmp_pin(&c, PS2_CLOCK_GPIO);
+
+    pio_sm_set_pindirs_with_mask(ps2kbd_pio, ps2kbd_sm,
+      0, // Outputs
+      (1 << PS2_CLOCK_GPIO) | (1 << PS2_DATA_GPIO)); // All pins*/
+
+    sm_config_set_in_shift(&c, true, true, 11);  // R shift, autopush @ 11 bits
+    sm_config_set_out_shift(&c, true, true, 32); // R shift, autopull @ 12 bits
+
+    sm_config_set_clkdiv(&c, 1000.0);
+
+    pio_sm_clear_fifos(ps2kbd_pio, ps2kbd_sm);
+
+    pio_sm_init(ps2kbd_pio, ps2kbd_sm, offset, &c);
+    pio_sm_set_enabled(ps2kbd_pio, ps2kbd_sm, true);
+
+    return true; // Success
+  }
+  return false;
+}
+
+/*
+ * read from PS/2 keyboard PIO FIFO queue
+ */
+uint8_t ps2kbd_read() {
+  if (!pio_sm_is_rx_fifo_empty(ps2kbd_pio, ps2kbd_sm))
+  {
+    uint32_t value32 = pio_sm_get_blocking(ps2kbd_pio, ps2kbd_sm);
+    value32 >>= 21;
+
+    uint8_t value = (value32 >> 1) & 0xff;
+
+    if (value == 0xaa)
+    {
+      sleep_us(350);
+      ps2kbd_write(0xfa);
+      return value;
+    }
+    else if (value == 0xfe)
+    {
+      return value;
+      // resend?
+    }
+    else if (value == 0xfa)
+    {
+      return value;
+      // ack
+    }
+    else
+    {
+      return value;
+    }
+  }
+
+  return 0;
+}
+
+/*
+ * write to PS/2 keyboard PIO FIFO queue
+ */
+void ps2kbd_write(uint8_t value) {
+  uint32_t value32 = value;
+
+  uint8_t bitsSet = 0;
+  for (int i = 0; i < 8; ++i)
+  {
+    bitsSet += ((value >> i) & 0x01);
+  }
+
+  value32 |= 0x600;
+  if ((bitsSet & 0x01) == 0)
+  {
+    value32 |= 0x100;
+  }
+
+  pio_sm_put_blocking(ps2kbd_pio, ps2kbd_sm, (~value32));
+}
+
+/*
+ * is the queue empty?
+ */
 bool kbdQueueEmpty()
 {
   return kbEnd == kbStart;
 }
 
+/*
+ * push a scancode to the queue
+ */
 void kbdQueuePush(uint8_t scancode)
 {
   kbQueue[kbEnd++] = scancode; kbEnd &= KB_QUEUE_MASK;
   raiseInterrupt(KBD_INT);
 }
 
+/*
+ * push a scancode from the queue
+ */
 uint8_t kbdQueuePop()
 {
   uint8_t val = kbQueue[kbStart++];
@@ -180,77 +151,4 @@ uint8_t kbdQueuePop()
   if (kbdQueueEmpty())
     releaseInterrupt(KBD_INT);
   return val;
-}
-
-
-char processAsciiToPs2(char c)
-{
-  if (c >= 128)
-    return 0;
-
-  bool shift = false;
-  if (isupper(c))
-  {
-    shift = true;
-  }
-  else
-  {
-    switch (c)
-    {
-      case '!': shift = true; break;
-      case '\"': shift = true; break;
-      case '#': shift = true; break;
-      case '$': shift = true; break;
-      case '%': shift = true; break;
-      case '&': shift = true; break;
-      case '(': shift = true; break;
-      case ')': shift = true; break;
-      case '*': shift = true; break;
-      case '+': shift = true; break;
-      case ':': shift = true; break;
-      case '<': shift = true; break;
-      case '>': shift = true; break;
-      case '?': shift = true; break;
-      case '^': shift = true; break;
-      case '_': shift = true; break;
-      case '{': shift = true; break;
-      case '|': shift = true; break;
-      case '}': shift = true; break;
-      case '~': shift = true; break;
-    }
-  }
-
-  char sc = ascii2Ps2[c];
-  if (sc)
-  {
-    if (shift)
-    {
-      kbdQueuePush(0x12);
-    }
-
-    kbdQueuePush(sc);
-    kbdQueuePush(0xf0);
-    kbdQueuePush(sc);
-
-    isShifted = shift;
-
-    raiseInterrupt(KBD_INT);
-  }
-  else
-  {
-    if (c == 0x03) // Ctrl+C
-    {
-      kbdQueuePush(0x14);
-      kbdQueuePush(ascii2Ps2['c']);
-      isControlled = true;
-      raiseInterrupt(KBD_INT);
-
-      printf("Ctrl+C\n", c);
-    }
-    else
-    {
-      printf("%02x not mapped\n", c);
-    }
-  }
-  return sc;
 }

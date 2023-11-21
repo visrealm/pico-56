@@ -113,13 +113,15 @@ void renderBootMenu()
   vrEmuTms9918WriteByteRpt(tms9918, vrEmuTms9918FgBgColor(TMS_DK_BLUE, TMS_WHITE), 16);
   vrEmuTms9918WriteByteRpt(tms9918, vrEmuTms9918FgBgColor(TMS_WHITE, TMS_DK_BLUE), 16);
 
-  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS + 27 * 8);
+  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS + 20 * 8);
   vrEmuTms9918WriteBytes(tms9918, tmsFont, tmsFontBytes);
-  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS + (128 + 27) * 8);
+  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_PATT_ADDRESS + (128 + 20) * 8);
   vrEmuTms9918WriteBytes(tms9918, tmsFont, tmsFontBytes);
 
-  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 + 7);
-  vrEmuTms9918WriteString(tms9918, "PICO-56 Boot Menu");
+  vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 + 1);
+  for (int i = 20; i < 27; ++i)
+    vrEmuTms9918WriteData(tms9918, i);
+  vrEmuTms9918WriteString(tms9918, "    Boot Menu");
 
   vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS);
   vrEmuTms9918WriteByteRpt(tms9918, ' ' - 5, 32);

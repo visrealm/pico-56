@@ -40,20 +40,10 @@ typedef struct
   float pioClocksPerScaledPixel;
 } VgaParams;
 
-typedef enum
-{
-  VGA_640_480_60HZ,
-  VGA_640_400_70HZ,
-  VGA_800_600_60HZ,
-  VGA_1024_768_60HZ,
-  VGA_1280_1024_60HZ,
-} VgaMode;
 
 typedef void (*vgaScanlineRgbFn)(uint16_t y, VgaParams* params, uint16_t* pixels);
 typedef void (*vgaEndOfFrameFn)(uint64_t frameNumber);
 typedef void (*vgaEndOfScanlineFn)();
-
-extern VgaParams vgaGetParams(VgaMode mode, int pixelScale);
 
 extern uint32_t vgaMinimumPioClockKHz(VgaParams* params);
 

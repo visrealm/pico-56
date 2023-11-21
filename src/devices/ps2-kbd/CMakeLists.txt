@@ -6,7 +6,7 @@ project (${LIBRARY} C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_library(${LIBRARY} STATIC ps2-kbd.c)
+add_library(${LIBRARY} STATIC ps2-kbd.c virtual-ps2-kbd.c)
 
 # generate header file from pio
 pico_generate_pio_header(${LIBRARY} ${CMAKE_CURRENT_LIST_DIR}/ps2-kbd.pio)

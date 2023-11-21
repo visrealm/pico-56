@@ -16,6 +16,9 @@
 
 #include "pico/stdlib.h"
 
+ /*
+  * get input for boot menu (accepts keyboard or nes)
+  */
 BootMenuInput currentInput()
 {
   static uint8_t lastScancode = 0;

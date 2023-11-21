@@ -12,10 +12,8 @@
 #include "tms9918.h"
 #include "vrEmuTms9918Util.h"
 
-#define VGA_VIRTUAL_WIDTH 320
-#define VGA_VIRTUAL_HEIGHT 240
-
 #include "vga.h"
+#include "vga-modes.h"
 #include "interrupts.h"
 
 #include "pico/stdlib.h"
@@ -29,9 +27,15 @@ static vgaEndOfScanlineFn scanlineCallback = NULL;
 static uint16_t __aligned(4) tmsPal[16];
 static uint8_t __aligned(4) tmsScanlineBuffer[TMS9918_PIXELS_X];
 
+/*
+ * convert 48-bit rgb to 12-bit bgr
+ */
 static uint16_t colorFromRgb(uint16_t r, uint16_t g, uint16_t b)
 {
-  return ((uint16_t)(r / 16.0f) & 0x0f) | (((uint16_t)(g / 16.0f) & 0x0f) << 4) | (((uint16_t)(b / 16.0f) & 0x0f) << 8);
+  return
+    ((uint16_t)(r / 16.0f) & 0x0f) |
+    (((uint16_t)(g / 16.0f) & 0x0f) << 4) |
+    (((uint16_t)(b / 16.0f) & 0x0f) << 8);
 }
 
 /*
@@ -44,6 +48,7 @@ static void tmsScanline(uint16_t y, VgaParams* params, uint16_t* pixels)
 
   uint16_t bg = tmsPal[vrEmuTms9918RegValue(tms, TMS_REG_FG_BG_COLOR) & 0x0f];
 
+  // top or bottom border
   if (y < vBorder || y >= (vBorder + TMS9918_PIXELS_Y))
   {
     for (int x = 0; x < params->hVirtualPixels; ++x)
@@ -55,24 +60,29 @@ static void tmsScanline(uint16_t y, VgaParams* params, uint16_t* pixels)
 
   y -= vBorder;
 
+  // left border
   for (int x = 0; x < hBorder; ++x)
   {
     pixels[x] = bg;
   }
 
+  // get scanline data from the tms9918
   vrEmuTms9918ScanLine(tms, y, tmsScanlineBuffer);
 
+  // convert to our 12-bit palette and output to pixels array
   int tmsX = 0;
   for (int x = hBorder; x < hBorder + TMS9918_PIXELS_X; ++x, ++tmsX)
   {
     pixels[x] = tmsPal[tmsScanlineBuffer[tmsX]];
   }
 
+  // right border
   for (int x = hBorder + TMS9918_PIXELS_X; x < params->hVirtualPixels; ++x)
   {
     pixels[x] = bg;
   }
 
+  // interrupt?
   if (y == TMS9918_PIXELS_Y - 1)
   {
     if ((vrEmuTms9918RegValue(tms, TMS_REG_1) & 0x20))
@@ -82,16 +92,25 @@ static void tmsScanline(uint16_t y, VgaParams* params, uint16_t* pixels)
   }
 }
 
+/*
+ * set callback for end of frame events
+ */
 void tmsSetFrameCallback(vgaEndOfFrameFn cb)
 {
   eofCallback = cb;
 }
 
+/*
+ * set callback for end of scanline events
+ */
 void tmsSetHsyncCallback(vgaEndOfScanlineFn cb)
 {
   scanlineCallback = cb;
 }
 
+/*
+ * get vga horizontal frequency in Hz
+ */
 int tmsGetHsyncFreq()
 {
   return vgaCurrentParams().params.hSyncParams.freqHz;

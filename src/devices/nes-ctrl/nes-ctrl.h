@@ -11,10 +11,11 @@
 
  #pragma once
 
-bool nes_begin(uint8_t clkPin, uint8_t dataPin, uint8_t latPin);
+ #include <inttypes.h>
+
+bool nes_begin();
 
 void nes_read_start(void);
-
 void nes_read_finish(void);
 
 uint8_t nes_get_state_1();

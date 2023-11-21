@@ -46,24 +46,21 @@ static VrEmu6502* cpu = NULL;
 static VrEmu6522* via = NULL;
 static VrEmuTms9918* tms9918 = NULL;
 
-#define PS2_DATA_GPIO  14
-#define PS2_CLOCK_GPIO 15
-
-#define NES_LATCH_GPIO 26
-#define NES_CLOCK_GPIO 22
-#define NES1_DATA_GPIO 27
-#define NES2_DATA_GPIO 28
-
 #define HBC56_CLOCK_FREQ_MHZ 3.686400 /* half of 7.3728*/
 #define MICROSECONDS_PER_BURST  50
 #define TICKS_PER_BURST (int)(MICROSECONDS_PER_BURST * HBC56_CLOCK_FREQ_MHZ)
 
 #define CPU_6502_WAI 0xcb
 
+/*
+ * 65c02 bus read/write callbacks
+ */
 void busWrite(uint16_t addr, uint8_t val);
 uint8_t busRead(uint16_t addr, bool isDbg);
 
-/* called at the end of each frame */
+/*
+ * called at the end of each frame
+ */
 static void endOfFrameCb(uint64_t frameNumber)
 {
   static uint8_t lastCode = 0;
@@ -130,17 +127,17 @@ void busInit()
   tmsSetHsyncCallback(audioUpdate);
 
   // PS/2 keyboard
-  ps2kbd_begin(PS2_CLOCK_GPIO, PS2_DATA_GPIO);
+  ps2kbd_begin();
 
   // dual NES controllers
-  nes_begin(NES_CLOCK_GPIO, NES1_DATA_GPIO, NES_LATCH_GPIO);
+  nes_begin();
   nes_read_start();
 }
 
 /*
  * the main loop
  */
-void busMainLoop()
+void __not_in_flash_func(busMainLoop)()
 {
   /* reset the cpu (technically don't need to do this as vrEmu6502New does reset it) */
   vrEmu6502Reset(cpu);
@@ -154,7 +151,6 @@ void busMainLoop()
   // loop forever
   while (1)
   {
-
     // run the cpu for a number of ticks
     while (i < TICKS_PER_BURST)
     {
@@ -190,12 +186,18 @@ void busMainLoop()
   }
 }
 
+/*
+ * 65c02 write to the bus
+ */
 void __not_in_flash_func(busWrite)(uint16_t addr, uint8_t val)
 {
+  // ram?
   if (addr < HBC56_IO_START)
   {
     ram[addr] = val;
   }
+
+  // io?
   else if (addr <= HBC56_ROM_START)
   {
     if ((addr & HBC56_VIA_PORT) == HBC56_VIA_PORT)
@@ -236,16 +238,24 @@ void __not_in_flash_func(busWrite)(uint16_t addr, uint8_t val)
 #define KB_INT_FLAG 0x02
 #define KB_RDY_FLAG 0x04
 
+/*
+ * 65c02 read from the bus
+ */
 uint8_t __not_in_flash_func(busRead)(uint16_t addr, bool isDbg)
 {
+  // rom?
   if (addr & 0x8000)
   {
     return pico56rom[addr & (HBC56_ROM_SIZE - 1)];
   }
+
+  // ram?
   else if (addr < HBC56_IO_START)
   {
     return ram[addr];
   }
+
+  // io?
   else
   {
     if ((addr & HBC56_VIA_PORT) == HBC56_VIA_PORT)

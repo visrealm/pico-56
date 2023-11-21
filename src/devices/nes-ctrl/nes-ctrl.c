@@ -13,40 +13,56 @@
 
 static PIO pio = pio1;
 static uint8_t sm = -1;
+
+#define NES_LATCH_GPIO 26
+#define NES_CLOCK_GPIO 22
+#define NES1_DATA_GPIO 27
+#define NES2_DATA_GPIO 28
+
 static uint8_t nes_state_1 = 0xff;
 static uint8_t nes_state_2 = 0xff;
 
+/*
+ * return NES1 state
+ */
 uint8_t nes_get_state_1()
 {
   return nes_state_1;
 }
+
+/*
+ * return NES2 state
+ */
 uint8_t nes_get_state_2()
 {
   return nes_state_2;
 }
 
-bool nes_begin(uint8_t clkPin, uint8_t dataPin, uint8_t latPin)
+/*
+ * start dual NES PIO
+ */
+bool nes_begin()
 {
   if (pio_can_add_program(pio, &nes_program) &&
     ((sm = pio_claim_unused_sm(pio, true)) >= 0)) {
     uint offset = pio_add_program(pio, &nes_program);
     pio_sm_config c = nes_program_get_default_config(offset);
 
-    sm_config_set_sideset_pins(&c, clkPin);
-    sm_config_set_in_pins(&c, dataPin);
-    sm_config_set_set_pins(&c, latPin, 1);
-    pio_gpio_init(pio, clkPin);
-    pio_gpio_init(pio, dataPin);
-    pio_gpio_init(pio, dataPin + 1);
-    pio_gpio_init(pio, latPin);
+    sm_config_set_sideset_pins(&c, NES_CLOCK_GPIO);
+    sm_config_set_in_pins(&c, NES1_DATA_GPIO);
+    sm_config_set_set_pins(&c, NES_LATCH_GPIO, 1);
+    pio_gpio_init(pio, NES_CLOCK_GPIO);
+    pio_gpio_init(pio, NES1_DATA_GPIO);
+    pio_gpio_init(pio, NES2_DATA_GPIO);
+    pio_gpio_init(pio, NES_LATCH_GPIO);
 
-    gpio_pull_up(dataPin);
-    gpio_pull_up(dataPin + 1);
+    gpio_pull_up(NES1_DATA_GPIO);
+    gpio_pull_up(NES2_DATA_GPIO);
 
     pio_sm_set_pindirs_with_mask(pio, sm,
-      (1 << clkPin) | (1 << latPin), // Outputs
-      (1 << clkPin) | (1 << dataPin) | (1 << (dataPin + 1)) |
-      (1 << latPin)); // All pins
+      (1 << NES_CLOCK_GPIO) | (1 << NES_LATCH_GPIO), // Outputs
+      (1 << NES_CLOCK_GPIO) | (1 << NES1_DATA_GPIO) | (1 << NES2_DATA_GPIO) |
+      (1 << NES_LATCH_GPIO)); // All pins
     sm_config_set_in_shift(&c, false, true, 16); // L shift, autopush @ 16 bits
 
     sm_config_set_clkdiv(&c, 266.0);
@@ -65,9 +81,19 @@ bool nes_begin(uint8_t clkPin, uint8_t dataPin, uint8_t latPin)
   return false;
 }
 
-void nes_read_start(void) { pio_interrupt_clear(pio, 0); }
+/*
+ * initiate dual NES read
+ */
+void nes_read_start(void)
+{
+  pio_interrupt_clear(pio, 0);
+}
 
-void nes_read_finish(void) {
+/*
+ * complete dual NES read
+ */
+void nes_read_finish(void)
+{
   uint32_t value = (sm >= 0) ? pio_sm_get_blocking(pio, sm) : 0xffff;
 
   uint8_t value1 = 0x00, value2 = 0x00;
@@ -82,5 +108,4 @@ void nes_read_finish(void) {
   }
   nes_state_1 = value1;
   nes_state_2 = value2;
-
 }
