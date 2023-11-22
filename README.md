@@ -42,6 +42,8 @@ In this episode, I incorporate my TMS9918 library and create some test programs 
 
 Gerbers for the PICO-56 v1.2 are now available. See [/schematics](schematics)
 
+If you would like to support this project, you can [order your PCBs from my PCBWay project link](https://www.pcbway.com/project/shareproject/PICO_56_Retro_Computer_on_a_Pi_Pico_515c59b8.html)
+
 ## Schematics
 
 <p align="left"><a href="schematics"><img src="schematics/Schematic_Pico56_v1_2.png" alt="PICO-56 v1.2" width="720px"></a></p>
@@ -68,7 +70,7 @@ Gerbers for the PICO-56 v1.2 are now available. See [/schematics](schematics)
 | 1        | Barrel jack connector             | 5V                                |
 | 1        | VGA connector                     | DSUB1                             |
 | 2        | RCA connector                     | J2,J3                             |
-| 1        | NES connector                     | NO1,NO2                           |
+| 2        | NES connector                     | NO1,NO2                           |
 | 1        | PS/2 connector                    | PS2                               |
 | 1        | Raspberry Pi Pico (plus headers)  | U1                                |
 | 1        | MicroSD card connector            | U2                                |
