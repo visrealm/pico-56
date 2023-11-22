@@ -6,9 +6,9 @@ In this episode, I build a VGA circuit on the Pico and write an intitial generic
 
 For this episode, we start the build by adding a VGA connector and a reset button to the Pico. 
 
-![VGA on Breadboard](../schematics/ep01-vga-breadboard.png)
+![VGA on Breadboard](ep01-vga-breadboard.png)
 
-Full schematic here: [ep01-vga-schematic.pdf](../schematics/ep01-vga-schematic.pdf)
+Full schematic here: [ep01-vga-schematic.pdf](ep01-vga-schematic.pdf)
 
 ## Example programs
 
