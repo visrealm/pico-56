@@ -322,6 +322,4 @@ void runBootMenu()
 
   }
   free(fileList);
-
-  f_unmount(pSD->pcName);
 }

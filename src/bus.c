@@ -15,6 +15,7 @@
 #include "audio.h"
 #include "nes-ctrl.h"
 #include "ps2-kbd.h"
+#include "sdcard.h"
 
 #include "interrupts.h"
 #include "config.h"
@@ -49,6 +50,13 @@ static VrEmuTms9918* tms9918 = NULL;
 #define HBC56_CLOCK_FREQ_MHZ 3.686400 /* half of 7.3728*/
 #define MICROSECONDS_PER_BURST  50
 #define TICKS_PER_BURST (int)(MICROSECONDS_PER_BURST * HBC56_CLOCK_FREQ_MHZ)
+
+#define FOPEN_PORT 0x04
+#define FCLOSE_PORT 0x04
+#define FREAD_PORT 0x05
+#define FWRITE_PORT 0x05
+
+FIL fil;
 
 #define CPU_6502_WAI 0xcb
 
@@ -235,6 +243,21 @@ void __not_in_flash_func(busWrite)(uint16_t addr, uint8_t val)
           audioWritePsg1(addr, val);
           break;
 
+        case FOPEN_PORT:
+          {
+            uint16_t addr = ram[val] | (ram[val + 1] << 8);
+            char* strAddr = ram + addr;
+            f_open(&fil, strAddr, FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
+          }
+          break;
+
+        case FWRITE_PORT:
+          {
+            uint bw = 0;
+            f_write(&fil, &val, 1, &bw);
+          }
+          break;
+
         default:
           // unknown device
           break;
@@ -317,6 +340,21 @@ uint8_t __not_in_flash_func(busRead)(uint16_t addr, bool isDbg)
 
         case HBC56_AY38910_B_PORT | 0x02:
           return audioReadPsg1();
+
+        case FCLOSE_PORT:
+          f_close(&fil);
+          return 0;
+
+        case FREAD_PORT:
+          {
+            uint br = 0;
+            uint8_t value = 0;
+            if (f_read(&fil, &value, 1, &br) != FR_OK)
+            {
+              value = 0;
+            }
+            return value;
+          }
 
         default:
           return 0x00;

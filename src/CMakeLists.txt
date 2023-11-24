@@ -20,6 +20,7 @@ target_link_libraries(${PROGRAM} PRIVATE
         pico-56-audio
         pico-56-boot-menu
         pico-56-interrupts
+        pico-56-sdcard
         pico_stdlib
         pico_multicore
         hardware_pio
