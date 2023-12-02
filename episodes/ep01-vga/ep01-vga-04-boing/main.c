@@ -11,7 +11,6 @@
 
 #include "vga.h"
 #include "images.h"
-#include "background.h"
 
 #include "pico/stdlib.h"
 

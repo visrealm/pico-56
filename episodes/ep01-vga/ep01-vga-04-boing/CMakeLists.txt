@@ -6,8 +6,7 @@ add_executable(${PROGRAM})
 pico_generate_pio_header(${PROGRAM} ${CMAKE_CURRENT_LIST_DIR}/vga.pio)
 
 # generate image array source files from png images
-visrealm_generate_image_source(${PROGRAM} images res/ball*.png)
-visrealm_generate_image_source(${PROGRAM} background res/background.png)
+visrealm_generate_image_source(${PROGRAM} images res/ball*.png res/background.png)
 
 target_sources(${PROGRAM} PRIVATE main.c vga.c pio_utils.c)
 
