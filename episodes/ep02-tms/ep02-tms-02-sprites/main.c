@@ -10,6 +10,7 @@
  */
 
 #include "vga.h"
+#include "vga-modes.h"
 
 #include "vrEmuTms9918Util.h"
 
@@ -116,7 +117,8 @@ int main(void)
     vrEmuTms9918WriteData(tms, i + 2);
   }
 
-  VgaInitParams params;
+  VgaInitParams params = { 0 };
+  params.params = vgaGetParams(VGA_640_480_60HZ, 2);
   params.scanlineFn = tmsScanline;
   params.endOfFrameFn = animateSprites;
 

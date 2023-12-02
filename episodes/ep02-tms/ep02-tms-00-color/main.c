@@ -10,6 +10,7 @@
  */
 
 #include "vga.h"
+#include "vga-modes.h"
 #include "vrEmuTms9918.h"
 #include "vrEmuTms9918Util.h"
 
@@ -79,7 +80,8 @@ int main(void)
   vrEmuTms9918SetAddressWrite(tms, TMS_DEFAULT_VRAM_COLOR_ADDRESS);
   vrEmuTms9918WriteByteRpt(tms, vrEmuTms9918FgBgColor(TMS_MAGENTA, TMS_WHITE), 32);
 
-  VgaInitParams params;
+  VgaInitParams params = { 0 };
+  params.params = vgaGetParams(VGA_640_480_60HZ, 2);
   params.scanlineFn = tmsScanline;
   params.endOfFrameFn = NULL;
 

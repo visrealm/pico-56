@@ -10,6 +10,7 @@
  */
 
 #include "vga.h"
+#include "vga-modes.h"
 
 #include "vrEmuTms9918Util.h"
 #include "breakout.h"
@@ -74,13 +75,15 @@ void animateSprites(uint64_t frameNumber)
   for (int i = 0; i < 16; ++i)
   {
     float x = sin(frameNumber / 20.0f + i / 3.0f);
-    vrEmuTms9918SetAddressWrite(tms, TMS_DEFAULT_VRAM_SPRITE_ATTR_ADDRESS + (8 * i));
+
+    vrEmuTms9918SetAddressWrite(tms, TMS_DEFAULT_VRAM_SPRITE_ATTR_ADDRESS + (8 * i) + 4);
     uint8_t yPos = (frameNumber / 2 + i * 10 + 24);
     if (yPos == 0xd0) ++yPos;
     vrEmuTms9918WriteData(tms, yPos);
     vrEmuTms9918WriteData(tms, 128 - 8 + (x * 80.0f));
+
+    vrEmuTms9918SetAddressWrite(tms, TMS_DEFAULT_VRAM_SPRITE_ATTR_ADDRESS + (8 * i));
     if (yPos - 2 == 0xd0) ++yPos;
-    vrEmuTms9918SetAddressWrite(tms, TMS_DEFAULT_VRAM_SPRITE_ATTR_ADDRESS + (8 * i) + 4);
     vrEmuTms9918WriteData(tms, yPos - 2);
     vrEmuTms9918WriteData(tms, 128 - 8 + (x * 80.0f) - 2);
   }
@@ -114,18 +117,19 @@ int main(void)
   const char* str = "Hello, World!";
   for (int i = 0; i < strlen(str); ++i)
   {
-    vrEmuTms9918WriteData(tms, i * 10 + 24);
-    vrEmuTms9918WriteData(tms, i * 10);
-    vrEmuTms9918WriteData(tms, str[strlen(str) - (i + 1)]);
-    vrEmuTms9918WriteData(tms, 1);
-
     vrEmuTms9918WriteData(tms, i * 10 + 24 - 2);
     vrEmuTms9918WriteData(tms, i * 10 - 2);
     vrEmuTms9918WriteData(tms, str[strlen(str) - (i + 1)]);
     vrEmuTms9918WriteData(tms, i + 2);
+
+    vrEmuTms9918WriteData(tms, i * 10 + 24);
+    vrEmuTms9918WriteData(tms, i * 10);
+    vrEmuTms9918WriteData(tms, str[strlen(str) - (i + 1)]);
+    vrEmuTms9918WriteData(tms, 1);
   }
 
-  VgaInitParams params;
+  VgaInitParams params = { 0 };
+  params.params = vgaGetParams(VGA_640_480_60HZ, 2);
   params.scanlineFn = tmsScanline;
   params.endOfFrameFn = animateSprites;
 

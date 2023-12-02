@@ -10,6 +10,7 @@
  */
 
 #include "vga.h"
+#include "vga-modes.h"
 #include "slides.h"
 
 #include "pico/stdlib.h"
@@ -70,9 +71,9 @@ int main(void)
 {
   set_sys_clock_khz(252000, false);
 
-  VgaInitParams params;
+  VgaInitParams params = { 0 };
+  params.params = vgaGetParams(VGA_640_480_60HZ, 2);
   params.scanlineFn = slideshowScanline;
-  params.endOfFrameFn = NULL;
 
   vgaInit(params);
 
