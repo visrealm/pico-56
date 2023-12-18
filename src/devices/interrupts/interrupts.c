@@ -21,7 +21,7 @@ void setOrClearInterrupt(int irq, bool doSet)
 
 void raiseInterrupt(int irq)
 {
-  interruptRegister |= 1 << (irq - 1);
+  interruptRegister |= (1 << (irq - 1));
 }
 
 void releaseInterrupt(int irq)

@@ -67,11 +67,11 @@
 
 #ifdef _WINDOWS
 #define HBC56_HAVE_UART         1
+#endif
 #define HBC56_UART_PORT         0x20
 #define HBC56_UART_PORTNAME     "COM7"
 #define HBC56_UART_CLOCK_FREQ   HBC56_CLOCK_FREQ
 #define HBC56_UART_IRQ          3
-#endif
 
 /* computed configuration values (shouldn't need to touch these) 
   -------------------------------------------------------------------------- */

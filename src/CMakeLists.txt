@@ -11,7 +11,7 @@ target_sources(${PROGRAM} PRIVATE main.c bus.c rom.c)
 pico_add_extra_outputs(${PROGRAM})
 
 pico_enable_stdio_usb(${PROGRAM} 1)
-pico_enable_stdio_uart(${PROGRAM} 1)
+pico_enable_stdio_uart(${PROGRAM} 0)
 
 target_link_libraries(${PROGRAM} PRIVATE
         pico-56-tms9918

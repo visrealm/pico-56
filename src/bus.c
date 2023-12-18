@@ -26,6 +26,7 @@
 #include "pico/time.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
  // HBC-56 RAM
 static uint8_t __aligned(4) ram[HBC56_RAM_SIZE];
@@ -59,6 +60,14 @@ static VrEmuTms9918* tms9918 = NULL;
 FIL fil;
 
 #define CPU_6502_WAI 0xcb
+
+#define UART_STATUS_RX_REG_FULL       0b00000001
+#define UART_STATUS_TX_REG_EMPTY      0b00000010
+
+static uint8_t uartControl = 0;
+static uint8_t uartStatus = UART_STATUS_TX_REG_EMPTY;
+static uint8_t uartBuffer = 0;
+
 
 /*
  * 65c02 bus read/write callbacks
@@ -160,6 +169,7 @@ void __not_in_flash_func(busMainLoop)()
 
   absolute_time_t startTime = get_absolute_time();
   absolute_time_t currentTime = startTime;
+  absolute_time_t nextUartTime = startTime;
 
   int i = 0;
   int prevViaInt = IntCleared;
@@ -183,6 +193,26 @@ void __not_in_flash_func(busMainLoop)()
     // run the via for a number of ticks
     vrEmu6522Ticks(via, TICKS_PER_BURST);
 
+    if (uartBuffer == 0)
+    {
+      nextUartTime = delayed_by_us(currentTime, 100);
+      int c = getchar_timeout_us(0);
+      if (c != PICO_ERROR_TIMEOUT)
+      {
+        //        putchar(c);
+        uartBuffer = c;// & 0xff;
+        raiseInterrupt(HBC56_UART_IRQ);
+        uartStatus = UART_STATUS_TX_REG_EMPTY;
+        uartStatus |= UART_STATUS_RX_REG_FULL;
+      }
+      else
+      {
+        releaseInterrupt(HBC56_UART_IRQ);
+        uartStatus &= ~(UART_STATUS_RX_REG_FULL);
+      }
+    }
+
+
     // has the via interrupted?
     setOrClearInterrupt(HBC56_VIA_IRQ, *vrEmu6522Int(via) == IntRequested);
 
@@ -201,6 +231,7 @@ void __not_in_flash_func(busMainLoop)()
     }
   }
 }
+
 
 /*
  * 65c02 write to the bus
@@ -241,6 +272,22 @@ void __not_in_flash_func(busWrite)(uint16_t addr, uint8_t val)
         case HBC56_AY38910_B_PORT:
         case HBC56_AY38910_B_PORT | 0x01:
           audioWritePsg1(addr, val);
+          break;
+
+        case HBC56_UART_PORT:
+          uartControl = val;
+          if ((val & 0x03) == 0x03)   // reset
+          {
+            uartStatus = UART_STATUS_TX_REG_EMPTY;
+          }
+          else
+          {
+            releaseInterrupt(HBC56_UART_IRQ);
+          }
+          break;
+
+        case HBC56_UART_PORT | 0x01:
+          putchar(val);
           break;
 
         case FOPEN_PORT:
@@ -340,6 +387,23 @@ uint8_t __not_in_flash_func(busRead)(uint16_t addr, bool isDbg)
 
         case HBC56_AY38910_B_PORT | 0x02:
           return audioReadPsg1();
+
+        case HBC56_UART_PORT:
+          return uartStatus;
+
+        case HBC56_UART_PORT | 0x01:
+          {
+            int c = getchar_timeout_us(0);
+            if (c == PICO_ERROR_TIMEOUT)
+            {
+              releaseInterrupt(HBC56_UART_IRQ);
+              uartStatus &= ~(UART_STATUS_RX_REG_FULL);
+              c = 0;
+            }
+            uint8_t val = uartBuffer;
+            uartBuffer = c;
+            return val;
+          }
 
         case FCLOSE_PORT:
           f_close(&fil);

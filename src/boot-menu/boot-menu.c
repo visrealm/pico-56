@@ -306,6 +306,8 @@ void runBootMenu()
     vrEmuTms9918WriteString(tms9918, "Loading ");
     vrEmuTms9918WriteString(tms9918, fileList[currentIndex].fname);
 
+    printf("Loading %s...\n", fileList[currentIndex].fname);
+
     FIL fil;
     fr = f_open(&fil, fileList[currentIndex].fname, FA_OPEN_EXISTING | FA_READ);
     if (fr == FR_OK || fr == FR_EXIST)
