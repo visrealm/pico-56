@@ -38,6 +38,14 @@ In this episode, I build a VGA circuit on the Raspberry Pi Pico and write an int
 #### [Episode 2 - TMS9918A](episodes/ep02-tms)
 In this episode, I incorporate my TMS9918 library and create some test programs to test the TMS9918 functionality on the Pi Pico.
 
+## Complete kits
+
+Complete PICO-56 kits are now available on Tindie:
+
+<a href="https://www.tindie.com/stores/visrealm/?ref=offsite_badges&utm_source=sellers_visrealm&utm_medium=badges&utm_campaign=badge_large"><img src="https://cdn.tindiemedia.com/images/resize/qL5JxSPbyPAxMbwftSB7DHa_63Q=/p/fit-in/1370x912/filters:fill(fff)/i/214054/products/2023-12-21T04%3A30%3A01.986Z-pico-56-kit-components.jpg?1703104328" height="480px"></img></a>
+
+<a href="https://www.tindie.com/stores/visrealm/?ref=offsite_badges&utm_source=sellers_visrealm&utm_medium=badges&utm_campaign=badge_large"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
+
 ## Gerbers
 
 Gerbers for the PICO-56 v1.2 are now available. See [/schematics](schematics)
