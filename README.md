@@ -48,13 +48,13 @@ Complete PICO-56 kits are now available on Tindie:
 
 ## Gerbers
 
-Gerbers for the PICO-56 v1.2 are now available. See [/schematics](schematics)
+Gerbers for the PICO-56 v1.3 are now available. See [/schematics](schematics)
 
 If you would like to support this project, you can [order your PCBs from my PCBWay project link](https://www.pcbway.com/project/shareproject/PICO_56_Retro_Computer_on_a_Pi_Pico_515c59b8.html)
 
 ## Schematics
 
-<p align="left"><a href="schematics"><img src="schematics/Schematic_Pico56_v1_2.png" alt="PICO-56 v1.2" width="720px"></a></p>
+<p align="left"><a href="schematics"><img src="schematics/Schematic_Pico56_v1_3.png" alt="PICO-56 v1.3" width="720px"></a></p>
 
 ## Bill of materials
 
