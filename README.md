@@ -85,6 +85,11 @@ If you would like to support this project, you can [order your PCBs from my PCBW
 
 There is a more detailed BOM in the schematics folder. Alternatively, I have created a [Mouser project](https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=8431486f76) for this which contains everything except for the NES connectors which can be obtained from AliExpress.
 
+## Videos
+[![PICO-56 - Introduction](https://img.visualrealmsoftware.com/youtube/thumb/Nj_KkYn7YaA)](https://www.youtube.com/watch?v=Nj_KkYn7YaA)
+
+[![PICO-56 - Full Kit Build](https://img.visualrealmsoftware.com/youtube/thumb/1hwMNQ1DXIU)](https://www.youtube.com/watch?v=1hwMNQ1DXIU)
+
 ### Thanks
 
 Thanks to [PCBWay](https://pcbway.com/g/186WQ9) for supporting this project.
