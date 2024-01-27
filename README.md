@@ -61,8 +61,7 @@ If you would like to support this project, you can [order your PCBs from my PCBW
 | Qty.     | Description                       | Code                              |
 |----------|-----------------------------------|-----------------------------------|
 | 1        | PICO-56 PCB                       | PCB                               |
-| 2        | 10nf (103) ceramic capacitor      | C3,C4                             |
-| 3        | 100nf (104) ceramic capacitor     | C5,C6,C7                          |
+| 5        | 100nf (104) ceramic capacitor     | C3,C4,C5,C6,C7                    |
 | 3        | 10uf (106) electrolytic capacitor | C8,C1,C2                          |
 | 3        | 4kΩ 0.25w resistor                | R1,R5,R9                          |
 | 2        | 10kΩ 0.25w resistor               | R20,R21                           |
