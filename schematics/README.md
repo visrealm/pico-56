@@ -4,10 +4,6 @@ Version 1.4 of the schematic and [gerbers](Gerber_PCB_Pico56_v1_4.zip) are avila
 
 ![Schematic_Pico56_v1_4.png](/schematics/Schematic_Pico56_v1_4.png)
 
-![pcb_front_v1_4.png](/img/pcb_front_v1_4.png)
-
-![pcb_back_v1_4.png](/img/pcb_back_v1_4.png)
-
 ## Changelog
 
 #### v1.4
@@ -24,3 +20,7 @@ Version 1.4 of the schematic and [gerbers](Gerber_PCB_Pico56_v1_4.zip) are avila
 #### v1.2
 
 * Initial public release
+
+![pcb_front_v1_4.png](/img/pcb_front_v1_4.png)
+
+![pcb_back_v1_4.png](/img/pcb_back_v1_4.png)
