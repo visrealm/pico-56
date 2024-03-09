@@ -17,8 +17,8 @@ The threaded inserts I've used are M3.5x5.7x4.6
 
 ### Gallery
 
-![PICO-56 - Case](img/pico56-case1.jpg)
-![PICO-56 - Case](img/pico56-case2.jpg)
-![PICO-56 - Case](img/pico56-case3.jpg)
-![PICO-56 - Case](img/pico56-case4.jpg)
-![PICO-56 - Case](img/pico56-case5.jpg)
+![PICO-56 - Case](img/pico56-case1.jpg?)
+![PICO-56 - Case](img/pico56-case2.jpg?)
+![PICO-56 - Case](img/pico56-case3.jpg?)
+![PICO-56 - Case](img/pico56-case4.jpg?)
+![PICO-56 - Case](img/pico56-case5.jpg?)
