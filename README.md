@@ -88,7 +88,7 @@ There is a more detailed BOM in the [/schematics](schematics) folder. Alternativ
 
 A 3D printed case is available. All STLs are in the [/case](case) directory.
 
-<p align="left"><a href="case"><img src="case/pico56-case4.jpg" alt="PICO-56 case" width="720px"></a></p>
+<p align="left"><a href="case"><img src="case/img/pico56-case4.jpg" alt="PICO-56 case" width="720px"></a></p>
 
 ## Videos
 [![PICO-56 - Introduction](https://img.visualrealmsoftware.com/youtube/thumb/Nj_KkYn7YaA)](https://www.youtube.com/watch?v=Nj_KkYn7YaA)
