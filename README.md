@@ -82,7 +82,13 @@ If you would like to support this project, you can [order your PCBs from my PCBW
 | 1        | Raspberry Pi Pico (plus headers)  | U1                                |
 | 1        | MicroSD card connector            | U2                                |
 
-There is a more detailed BOM in the schematics folder. Alternatively, I have created a [Mouser project](https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=8431486f76) for this which contains everything except for the NES connectors which can be obtained from AliExpress.
+There is a more detailed BOM in the [/schematics](schematics) folder. Alternatively, I have created a [Mouser project](https://www.mouser.com/ProjectManager/ProjectDetail.aspx?AccessID=8431486f76) for this which contains everything except for the NES connectors which can be obtained from AliExpress.
+
+## 3D Printed case
+
+A 3D printed case is available. All STLs are in the [/case](case) directory.
+
+<p align="left"><a href="case"><img src="case/pico56-case4.jpg" alt="PICO-56 case" width="720px"></a></p>
 
 ## Videos
 [![PICO-56 - Introduction](https://img.visualrealmsoftware.com/youtube/thumb/Nj_KkYn7YaA)](https://www.youtube.com/watch?v=Nj_KkYn7YaA)
