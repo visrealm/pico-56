@@ -221,7 +221,7 @@ void __not_in_flash_func(busMainLoop)()
 
     // delay or continue immediately to keep cpu clock
     currentTime = delayed_by_us(currentTime, MICROSECONDS_PER_BURST);
-    if (currentTime < get_absolute_time())
+    if (to_us_since_boot(currentTime) < to_us_since_boot(get_absolute_time()))
     {
       currentTime = get_absolute_time();
     }

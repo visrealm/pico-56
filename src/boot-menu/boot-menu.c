@@ -210,7 +210,7 @@ void runBootMenu()
   renderPage(fileList, currentIndex, currentPage);
 
   int uiUpdateIndex = 0;
-  absolute_time_t nextUiUpdate = 0;
+  absolute_time_t nextUiUpdate = get_absolute_time();
 
   while (status)
   {
@@ -281,7 +281,7 @@ void runBootMenu()
 
     // update bottom message
     absolute_time_t currentTime = get_absolute_time();
-    if (currentTime > nextUiUpdate)
+    if (to_us_since_boot(currentTime) > to_us_since_boot(nextUiUpdate))
     {
       nextUiUpdate = delayed_by_ms(currentTime, 5000);
       vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 * 22);
