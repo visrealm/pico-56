@@ -20,44 +20,28 @@
 #endif
 
  /*
-  * set a pio state machine x register
+  * set a pio state machine x or y register
   */
-void pio_set_x(PIO pio, uint sm, uint32_t x)
+void pio_set_xy(PIO pio, uint sm, uint32_t val, enum pio_src_dest dest)
 {
+  // sanity guard
+  if (dest != pio_x || dest != pio_y)
+  {
+    return;
+  }
   // shift in 4 bits at a time (8 times)
   // we can only shift in up to 5 bits at a time
   // but doing 4 as it's easier (factor of 32)
-  for (int i = 0; i < ITERATIONS; ++i, x >>= BITS_PER_ITER)
+  for (int i = 0; i < ITERATIONS; ++i, val >>= BITS_PER_ITER)
   {
-    // set y to lowest 4 bits of value
-    pio_sm_exec(pio, sm, pio_encode_set(pio_x, x & BIT_MASK));
+    // set dest to lowest 4 bits of value
+    pio_sm_exec(pio, sm, pio_encode_set(dest, val & BIT_MASK));
 
     // shift the 4 bits into isr
-    pio_sm_exec(pio, sm, pio_encode_in(pio_x, BITS_PER_ITER));
+    pio_sm_exec(pio, sm, pio_encode_in(dest, BITS_PER_ITER));
   }
 
-  // copy isr into y register
-  pio_sm_exec(pio, sm, pio_encode_mov(pio_x, pio_isr));
+  // copy isr into dest register
+  pio_sm_exec(pio, sm, pio_encode_mov(dest, pio_isr));
 }
 
-
-/*
- * set a pio state machine y register
- */
-void pio_set_y(PIO pio, uint sm, uint32_t y)
-{
-  // shift in 4 bits at a time (8 times)
-  // we can only shift in up to 5 bits at a time
-  // but doing 4 as it's easier (factor of 32)
-  for (int i = 0; i < ITERATIONS; ++i, y >>= BITS_PER_ITER)
-  {
-    // set y to lowest 4 bits of value
-    pio_sm_exec(pio, sm, pio_encode_set(pio_y, y & BIT_MASK));
-
-    // shift the 4 bits into isr
-    pio_sm_exec(pio, sm, pio_encode_in(pio_y, BITS_PER_ITER));
-  }
-
-  // copy isr into y register
-  pio_sm_exec(pio, sm, pio_encode_mov(pio_y, pio_isr));
-}

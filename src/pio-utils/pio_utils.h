@@ -13,5 +13,6 @@
 
 #include "hardware/pio.h"
 
-void pio_set_x(PIO pio, uint sm, uint32_t y);
-void pio_set_y(PIO pio, uint sm, uint32_t y);
+void pio_set_xy(PIO pio, uint sm, uint32_t val, enum pio_src_dest dest);
+#define pio_set_x(pio, sm, x) pio_set_xy(pio, sm, x, pio_x)
+#define pio_set_y(pio, sm, y) pio_set_xy(pio, sm, y, pio_y)
