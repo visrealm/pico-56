@@ -25,7 +25,7 @@
 void pio_set_xy(PIO pio, uint sm, uint32_t val, enum pio_src_dest dest)
 {
   // sanity guard
-  if (dest != pio_x || dest != pio_y)
+  if (dest != pio_x && dest != pio_y)
   {
     return;
   }
