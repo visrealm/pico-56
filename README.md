@@ -28,6 +28,9 @@ To set up your development environment for the Raspberry Pi Pico, follow the [Ra
 
 For Windows users, there is a pre-packaged installer provided by the Raspberry Pi Foundation: https://github.com/raspberrypi/pico-setup-windows/releases/. Once installed, just open the pre-configured "Pico - Visual Studio Code" from your start menu.
 
+The build system expects `python3` to be available. If you have installed Python 3 outside of the Microsoft Store, you may need to alias your Python executable.
+You can do this from an elevated (Administator) command prompt in your python directory e.g. `C:\Program Files\Python310\` by creating a symlink with the command: `mklink python3.exe python.exe`.
+
 ## Episodes
 In the Episodes, I build the code from the ground up and provide a number of working demos. These are a work in progress with more to come as the videos come out.
 #### [Episode 1 - VGA](episodes/ep01-vga)
