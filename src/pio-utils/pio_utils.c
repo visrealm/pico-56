@@ -19,16 +19,12 @@
 #  error "BITS_PER_ITER must be a multiple of 32"
 #endif
 
+
  /*
   * set a pio state machine x or y register
   */
-void pio_set_xy(PIO pio, uint sm, uint32_t val, enum pio_src_dest dest)
+static void pio_set_xy(PIO pio, uint sm, uint32_t val, enum pio_src_dest dest)
 {
-  // sanity guard
-  if (dest != pio_x && dest != pio_y)
-  {
-    return;
-  }
   // shift in 4 bits at a time (8 times)
   // we can only shift in up to 5 bits at a time
   // but doing 4 as it's easier (factor of 32)
@@ -45,3 +41,18 @@ void pio_set_xy(PIO pio, uint sm, uint32_t val, enum pio_src_dest dest)
   pio_sm_exec(pio, sm, pio_encode_mov(dest, pio_isr));
 }
 
+ /*
+  * set the pio state machine x register
+  */
+void pio_set_x(PIO pio, uint sm, uint32_t x)
+{
+  pio_set_xy(pio, sm, x, pio_x);
+}
+
+ /*
+  * set the pio state machine y register
+  */
+void pio_set_y(PIO pio, uint sm, uint32_t y)
+{
+  pio_set_xy(pio, sm, y, pio_y);
+}
