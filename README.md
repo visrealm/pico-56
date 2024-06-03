@@ -50,6 +50,10 @@ Complete PICO-56 kits are now available on Tindie:
 
 <a href="https://www.tindie.com/stores/visrealm/?ref=offsite_badges&utm_source=sellers_visrealm&utm_medium=badges&utm_campaign=badge_large"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
 
+Also featured in HackerBox 0103 for those in the US:
+
+<a href="https://hackerboxes.com/collections/past-hackerboxes/products/hackerbox-0103-homebrew"><img src="https://hackerboxes.com/cdn/shop/files/HB0103WholeBox_1024x1024@2x.png" height="480px"></img></a>
+
 ## Gerbers
 
 Gerbers for the PICO-56 v1.4 are now available. See [/schematics](schematics)
