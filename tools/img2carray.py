@@ -121,7 +121,7 @@ def getFileHeader(fileName, romFileList, ramFileList, args, isHeaderFile) -> str
         hdrText += f"#ifndef _{sanitizedFile}\n"
         hdrText += f"#define _{sanitizedFile}\n\n"
     else:
-        hdrText += "#include \"pico/platform.h\"\n"
+        hdrText += "#include \"pico.h\"\n"
     hdrText += "#include <inttypes.h>"
     return hdrText
 

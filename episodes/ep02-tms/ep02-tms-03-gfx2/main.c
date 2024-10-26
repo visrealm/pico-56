@@ -16,6 +16,7 @@
 #include "breakout.h"
 
 #include "pico/stdlib.h"
+#include "hardware/clocks.h"
 
 #include <stdlib.h>
 #include <math.h>

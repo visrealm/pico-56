@@ -15,6 +15,7 @@
 #include "vrEmuTms9918Util.h"
 
 #include "pico/stdlib.h"
+#include "hardware/clocks.h"
 
 #include <stdlib.h>
 #include <math.h>
