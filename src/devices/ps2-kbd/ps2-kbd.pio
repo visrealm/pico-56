@@ -1,0 +1,50 @@
+/*
+ * Project: pico-56 - PS/2 keyboard
+ *
+ * Copyright (c) 2023 Troy Schrapel
+ *
+ * This code is licensed under the MIT license
+ *
+ * https://github.com/visrealm/pico-56
+ *
+ */
+ 
+ 
+/*
+ * #define PS2_DATA        0    in/out
+ * #define PS2_CLK         1    in/out
+ */
+
+.program ps2kbd
+
+.wrap_target
+main:
+  set pins,    0b00
+  set pindirs, 0b00
+
+mainLoop:
+  jmp !osre doWrite
+  jmp pin mainLoop    ; if clock is high, loop. otherwise, we're about to read something
+
+  set x, 10
+
+readLoop:
+  wait 0 pin 1
+  in pins, 1
+  wait 1 pin 1
+  jmp x-- readLoop
+  jmp main
+
+doWrite:
+  set pindirs, 0b10 [31]
+  set pindirs, 0b11 [5]
+  set pindirs, 0b01
+  set x, 10
+writeLoop:
+  wait 0 pin 1 [2]
+  out pindirs, 1
+  wait 1 pin 1 [1]
+  jmp x-- writeLoop
+  out null 21
+
+.wrap

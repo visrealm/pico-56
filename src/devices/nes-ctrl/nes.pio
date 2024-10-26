@@ -1,0 +1,32 @@
+/*
+ * vrEmuTms9918Pico
+ *
+ * Copyright (c) 2023 Troy Schrapel
+ *
+ * This code is licensed under the MIT license
+ *
+ * https://github.com/visrealm/pico-56
+ *
+ */
+ 
+ 
+/*
+ * #define NES_LATCH_GPIO  0    out
+ * #define NES_CLOCK_GPIO  1    out
+ * #define NES1_DATA_GPIO  2    in
+ * #define NES2_DATA_GPIO  3    in
+ */
+
+.program nes
+.side_set 1
+
+.wrap_target
+  irq wait 0      side 0      ; Set IRQ and wait for CPU to clear it
+  set pins, 1     side 0 [10] ; Latch high, 12 uS total
+  set x, 7        side 0      ; Set bit counter
+  set pins, 0     side 0      ; Latch low
+bitloop:
+  in pins, 2      side 0 [4]  ; Read bit on falling clock or latch, wait 6 uS
+  set pins, 0     side 1 [5]  ; Clock high, wait for 6 uS
+  jmp x-- bitloop side 0      ; Clock low, repeat for 8 bits
+.wrap
