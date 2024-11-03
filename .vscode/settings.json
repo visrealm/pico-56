@@ -42,6 +42,11 @@
         "gpio.h": "c",
         "clocks.h": "c",
         "vga-modes.h": "c",
-        "padsbank0.h": "c"
+        "padsbank0.h": "c",
+        "ff.h": "c",
+        "ffconf.h": "c",
+        "sdcard.h": "c",
+        "sd_card.h": "c",
+        "vremutms9918util.h": "c"
     }
 }

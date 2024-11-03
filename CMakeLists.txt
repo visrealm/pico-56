@@ -1,4 +1,4 @@
-# == DO NEVER EDIT THE NEXT LINES for Raspberry Pi Pico VS Code Extension to work ==
+# == DO NOT EDIT THE FOLLOWING LINES for the Raspberry Pi Pico VS Code Extension to work ==
 if(WIN32)
     set(USERHOME $ENV{USERPROFILE})
 else()
@@ -13,6 +13,8 @@ if (EXISTS ${picoVscode})
 endif()
 # ====================================================================================
 cmake_minimum_required(VERSION 3.12)
+
+set(PICO_BOARD pico2 CACHE STRING "Board type")
 
 # pull in PICO SDK (must be before project)
 include(pico_sdk_import.cmake)

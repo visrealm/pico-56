@@ -28,5 +28,5 @@ target_link_libraries(${PROGRAM} PRIVATE
         hardware_pwm
         vrEmu6502
         vrEmu6522        
-        FatFs_SPI)
+        no-OS-FatFS-SD-SDIO-SPI-RPi-Pico)
 
