@@ -121,7 +121,7 @@ void renderBootMenu()
   vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 + 1);
   for (int i = 20; i < 27; ++i)
     vrEmuTms9918WriteData(tms9918, i);
-  vrEmuTms9918WriteString(tms9918, "    Boot Menu      v0.4");
+  vrEmuTms9918WriteString(tms9918, "    Boot Menu      v"PICO56_VERSION);
 
   vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS);
   vrEmuTms9918WriteByteRpt(tms9918, ' ' - 5, 32);
