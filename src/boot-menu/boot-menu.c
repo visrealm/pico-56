@@ -171,8 +171,8 @@ void runBootMenu()
   vrEmuTms9918SetAddressWrite(tms9918, TMS_DEFAULT_VRAM_NAME_ADDRESS + 32 * 3 + 1);
   vrEmuTms9918WriteString(tms9918, "Checking for MicroSD...");
 
-  FATFS fs;
-  FRESULT fr = f_mount(&fs, "", 1);
+  sd_card_t *sdc = sd_get_by_num(0);
+  FRESULT fr = f_mount(&sdc->state.fatfs, "", 1);
 
   TCHAR label[255] = "Not present";
   DWORD vsn = 0;
