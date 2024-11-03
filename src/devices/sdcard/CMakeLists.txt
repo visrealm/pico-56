@@ -12,4 +12,4 @@ target_include_directories (${LIBRARY} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(${LIBRARY} PUBLIC
         pico_stdlib
-        FatFs_SPI)
+        no-OS-FatFS-SD-SDIO-SPI-RPi-Pico)

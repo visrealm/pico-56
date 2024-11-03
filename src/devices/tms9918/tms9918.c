@@ -17,6 +17,7 @@
 #include "interrupts.h"
 
 #include "pico/stdlib.h"
+#include "hardware/clocks.h"
 
 #include "pico/divider.h"
 

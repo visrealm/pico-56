@@ -12,6 +12,7 @@
 #include "vga.h"
 
 #include "pico/stdlib.h"
+#include "hardware/clocks.h"
 
 void rgbScanline(uint16_t y, uint16_t pixels[VGA_VIRTUAL_WIDTH])
 {

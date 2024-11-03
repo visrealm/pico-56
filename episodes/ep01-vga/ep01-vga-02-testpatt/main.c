@@ -12,6 +12,7 @@
 #include "vga.h"
 
 #include "pico/stdlib.h"
+#include "hardware/clocks.h"
 
 int addColor(int r, int g, int b, int y, int count, uint16_t* pixels)
 {

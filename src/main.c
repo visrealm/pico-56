@@ -13,13 +13,11 @@
 #include "boot-menu.h"
 
 #include "pico/stdlib.h"
-#include "rtc.h"
 
 int main(void)
 {
   // initialize stdio over usb serial
   stdio_init_all();
-  time_init();
 
   // initialize the bus (all devices)
   busInit();

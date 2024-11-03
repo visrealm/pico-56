@@ -12,6 +12,7 @@
 #include "vga.h"
 
 #include "pico/stdlib.h"
+#include "hardware/clocks.h"
 
 #include <memory.h>
 #include <stdlib.h>
