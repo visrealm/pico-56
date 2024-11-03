@@ -27,6 +27,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
  // HBC-56 RAM
 static uint8_t __aligned(4) ram[HBC56_RAM_SIZE];
@@ -58,6 +59,9 @@ static VrEmuTms9918* tms9918 = NULL;
 #define FWRITE_PORT 0x05
 
 FIL fil;
+
+char dirListing[2048];
+char* dirListPtr = NULL;
 
 #define CPU_6502_WAI 0xcb
 
@@ -294,7 +298,31 @@ void __not_in_flash_func(busWrite)(uint16_t addr, uint8_t val)
           {
             uint16_t addr = ram[val] | (ram[val + 1] << 8);
             char* strAddr = ram + addr;
-            f_open(&fil, strAddr, FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
+            if (*strAddr == '$')
+            {
+              DIR d;
+              FILINFO fno;
+              memset(&d, 0, sizeof d);
+              memset(&fno, 0, sizeof fno);
+
+              int index = 0;
+              FRESULT fr = f_findfirst(&d, &fno, ".", "*.bas");
+              dirListPtr = dirListing;
+
+              while ((FR_OK == fr) && fno.fname[0] && (dirListPtr < (dirListing + sizeof(dirListing) - 32)))
+              {
+                dirListPtr += sprintf(dirListPtr, "%d %-18.18s %7d B\r", index, fno.fname, fno.fsize);
+
+                index++;
+                fr = f_findnext(&d, &fno);
+              }
+              dirListPtr = dirListing;
+            }
+            else
+            {
+              dirListPtr = NULL;
+              f_open(&fil, strAddr, FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
+            }
           }
           break;
 
@@ -411,11 +439,22 @@ uint8_t __not_in_flash_func(busRead)(uint16_t addr, bool isDbg)
 
         case FREAD_PORT:
           {
-            uint br = 0;
             uint8_t value = 0;
-            if (f_read(&fil, &value, 1, &br) != FR_OK)
+            if (dirListPtr)
             {
-              value = 0;
+              value = *dirListPtr++;
+              if (value == 0 || (dirListPtr >= (dirListing + sizeof(dirListing))))
+              {
+                dirListPtr = NULL;
+              }
+            }
+            else
+            {
+              uint br = 0;
+              if (f_read(&fil, &value, 1, &br) != FR_OK)
+              {
+                value = 0;
+              }
             }
             return value;
           }
