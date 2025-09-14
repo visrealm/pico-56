@@ -1,0 +1,79 @@
+name: Build PICO-56 Common
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+        description: 'Operating system (ubuntu-latest, windows-latest, macos-latest)'
+      board:
+        required: true
+        type: string
+        description: 'Board type (pico or pico2)'
+
+jobs:
+  build:
+    runs-on: ${{ inputs.os }}
+    name: Build PICO-56 on ${{ inputs.os }} for ${{ inputs.board }}
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    # Linux specific setup
+    - name: Install dependencies (Linux)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake gcc-arm-none-eabi libnewlib-arm-none-eabi build-essential git python3
+
+    # macOS specific setup
+    - name: Install dependencies (macOS)
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake
+        brew tap ArmMbed/homebrew-formulae
+        brew install arm-none-eabi-gcc
+
+    # Windows specific setup
+    - name: Install dependencies (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+        choco install gcc-arm-embedded
+
+    - name: Setup Pico SDK
+      run: |
+        git clone https://github.com/raspberrypi/pico-sdk.git
+        cd pico-sdk
+        git submodule update --init
+        cd ..
+
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release -DPICO_BOARD=${{ inputs.board }} -DPICO_SDK_PATH=../pico-sdk
+
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --config Release
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: pico-56-${{ runner.os }}-${{ inputs.board }}
+        path: |
+          build/**/*.uf2
+          build/**/*.bin
+          build/**/*.elf
+        retention-days: 30

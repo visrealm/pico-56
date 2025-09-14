@@ -1,0 +1,15 @@
+name: Build Linux Pico
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-common.yml
+    with:
+      os: ubuntu-latest
+      board: pico
