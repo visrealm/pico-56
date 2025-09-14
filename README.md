@@ -20,30 +20,31 @@ Making use of my various emulation libraries (and more):
 
 Follow along on YouTube here: [youtube.com/@TroySchrapel](https://youtube.com/@TroySchrapel)
 
+## Build Status
+
+|         | Windows | Linux | macOS |
+|---------|---------|-------|-------|
+| **Pico** | [![Build Windows Pico](https://github.com/visrealm/pico-56/actions/workflows/build-windows-pico.yml/badge.svg?branch=main)](https://github.com/visrealm/pico-56/actions/workflows/build-windows-pico.yml) | [![Build Linux Pico](https://github.com/visrealm/pico-56/actions/workflows/build-linux-pico.yml/badge.svg?branch=main)](https://github.com/visrealm/pico-56/actions/workflows/build-linux-pico.yml) | [![Build macOS Pico](https://github.com/visrealm/pico-56/actions/workflows/build-macos-pico.yml/badge.svg?branch=main)](https://github.com/visrealm/pico-56/actions/workflows/build-macos-pico.yml) |
+| **Pico2** | [![Build Windows Pico2](https://github.com/visrealm/pico-56/actions/workflows/build-windows-pico2.yml/badge.svg?branch=main)](https://github.com/visrealm/pico-56/actions/workflows/build-windows-pico2.yml) | [![Build Linux Pico2](https://github.com/visrealm/pico-56/actions/workflows/build-linux-pico2.yml/badge.svg?branch=main)](https://github.com/visrealm/pico-56/actions/workflows/build-linux-pico2.yml) | [![Build macOS Pico2](https://github.com/visrealm/pico-56/actions/workflows/build-macos-pico2.yml/badge.svg?branch=main)](https://github.com/visrealm/pico-56/actions/workflows/build-macos-pico2.yml) |
+
 ## Development environment
 
-To set up your development environment for the Raspberry Pi Pico, follow the [Raspberry Pi C/C++ SDK Setup](https://www.raspberrypi.com/documentation/microcontrollers/c_sdk.html) instructions.
+To build PICO-56, you'll need:
+- CMake 3.12 or later
+- ARM cross-compilation toolchain
+- Python 3.x with Pillow library
+- Git with submodules support
 
-#### Windows
-
-For Windows users, there is a pre-packaged installer provided by the Raspberry Pi Foundation: https://github.com/raspberrypi/pico-setup-windows/releases/. Once installed, just open the pre-configured "Pico - Visual Studio Code" from your start menu.
-
-The build system expects `python3` to be available. If you have installed Python 3 outside of the Microsoft Store, you may need to alias your Python executable.
-
-You can do this from an elevated (Administator) command prompt in your python directory e.g. `C:\Program Files\Python310\` by creating a symlink with the command: `mklink python3.exe python.exe`.
-
-#### Linux and Mac
-
-To build the project, run the following commands from the project root:
+### Quick Start
 
 ```bash
 git clone --recursive https://github.com/visrealm/pico-56.git
 cd pico-56 && mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DPICO_SDK_FETCH_FROM_GIT=ON ..
-make -j4
+make -j4  # Linux/macOS
 ```
 
-This will download the correct version of the Pi Pico SDK for your system.
+For detailed platform-specific build instructions, troubleshooting, and advanced options, see **[BUILDING.md](BUILDING.md)**.
 
 ## Episodes
 In the Episodes, I build the code from the ground up and provide a number of working demos. These are a work in progress with more to come as the videos come out.
