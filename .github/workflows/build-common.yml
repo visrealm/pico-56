@@ -45,8 +45,7 @@ jobs:
       if: runner.os == 'macOS'
       run: |
         brew install cmake
-        brew tap ArmMbed/homebrew-formulae
-        brew install arm-none-eabi-gcc arm-none-eabi-newlib
+        brew install --cask gcc-arm-embedded
 
     # Windows specific setup
     - name: Install dependencies (Windows)
