@@ -32,6 +32,19 @@ The build system expects `python3` to be available. If you have installed Python
 
 You can do this from an elevated (Administator) command prompt in your python directory e.g. `C:\Program Files\Python310\` by creating a symlink with the command: `mklink python3.exe python.exe`.
 
+#### Linux and Mac
+
+To build the project, run the following commands from the project root:
+
+```bash
+git clone --recursive https://github.com/visrealm/pico-56.git
+cd pico-56 && mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DPICO_SDK_FETCH_FROM_GIT=ON ..
+make -j4
+```
+
+This will download the correct version of the Pi Pico SDK for your system.
+
 ## Episodes
 In the Episodes, I build the code from the ground up and provide a number of working demos. These are a work in progress with more to come as the videos come out.
 #### [Episode 1 - VGA](episodes/ep01-vga)
