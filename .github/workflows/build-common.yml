@@ -46,9 +46,7 @@ jobs:
       run: |
         brew install cmake
         brew tap ArmMbed/homebrew-formulae
-        brew install arm-none-eabi-gcc
-        # Install newlib for nosys.specs
-        brew install newlib-arm-none-eabi
+        brew install arm-none-eabi-gcc arm-none-eabi-newlib
 
     # Windows specific setup
     - name: Install dependencies (Windows)
