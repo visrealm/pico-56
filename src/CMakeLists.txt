@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(PICO56_VERSION   "0.5")
+set(PICO56_VERSION   "0.6a")
 
 string(REPLACE "." "-" PICO56_VERSION_STR "${PICO56_VERSION}")
 
