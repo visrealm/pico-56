@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ inputs.os }}
     defaults:
       run:
-        shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
+        shell: powershell
 
     name: Build PICO-56 on ${{ inputs.os }} for ${{ inputs.board }}
 
