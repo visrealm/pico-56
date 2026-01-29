@@ -36,7 +36,7 @@ To build PICO-56, you'll need:
 - Git with submodules support
 
 ### Quick Start
-
+ 
 ```bash
 git clone --recursive https://github.com/visrealm/pico-56.git
 cd pico-56 && mkdir build && cd build
