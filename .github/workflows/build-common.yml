@@ -55,6 +55,7 @@ jobs:
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
         choco install mingw -y
         choco install ninja -y
+        echo "C:\ProgramData\mingw64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         
     - name: Install ARM GNU Toolchain
       if: runner.os == 'Windows'
