@@ -53,10 +53,11 @@ jobs:
       if: runner.os == 'Windows'
       run: |
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-        choco install mingw -y
         choco install ninja -y
-        echo "C:\ProgramData\mingw64\mingw64\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        
+
+    - name: Install MSVC Build Tools
+      uses: microsoft/setup-msbuild@v2
+  
     - name: Install ARM GNU Toolchain
       if: runner.os == 'Windows'
       run: |
@@ -76,6 +77,7 @@ jobs:
     - name: Configure CMake (Windows)
       if: runner.os == 'Windows'
       run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
         mkdir build
         cd build
         cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DPICO_BOARD=${{ inputs.board }} -DPICO_SDK_PATH=../pico-sdk
@@ -88,7 +90,15 @@ jobs:
         cmake .. -DCMAKE_BUILD_TYPE=Release -DPICO_BOARD=${{ inputs.board }} -DPICO_SDK_PATH=../pico-sdk
 
     - name: Build
+      if: runner.os != 'Windows'
       run: |
+        cd build
+        cmake --build . --config Release
+
+    - name: Build (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        call "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
         cd build
         cmake --build . --config Release
 
