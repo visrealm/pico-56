@@ -56,6 +56,7 @@ jobs:
         choco install ninja -y
 
     - name: Install MSVC Build Tools
+      if: runner.os == 'Windows'
       uses: microsoft/setup-msbuild@v2
   
     - name: Install ARM GNU Toolchain
@@ -74,8 +75,9 @@ jobs:
         git submodule update --init
         cd ..
 
-    - name: Configure CMake (Windows)
+    - name: Configure CMake (Windows)   
       if: runner.os == 'Windows'
+      shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
         mkdir build
@@ -97,6 +99,7 @@ jobs:
 
     - name: Build (Windows)
       if: runner.os == 'Windows'
+      shell: cmd
       run: |
         call "C:\Program Files\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvars64.bat"
         cd build
