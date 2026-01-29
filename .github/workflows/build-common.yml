@@ -15,6 +15,10 @@ on:
 jobs:
   build:
     runs-on: ${{ inputs.os }}
+    defaults:
+      run:
+        shell: ${{ runner.os == 'Windows' && 'powershell' || 'bash' }}
+
     name: Build PICO-56 on ${{ inputs.os }} for ${{ inputs.board }}
 
     steps:
