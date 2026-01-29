@@ -55,8 +55,16 @@ jobs:
         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
         choco install mingw -y
         choco install ninja -y
-        choco install gcc-arm-embedded -y
-
+        
+    - name: Install ARM GNU Toolchain
+      if: runner.os == 'Windows'
+      run: |
+           $url = "https://github.com/xpack-dev-tools/arm-none-eabi-gcc-xpack/releases/download/v13.2.1-1.1/xpack-arm-none-eabi-gcc-13.2.1-1.1-win32-x64.zip"
+           $out = "arm.zip"
+           Invoke-WebRequest -Uri $url -OutFile $out
+           Expand-Archive -Path $out -DestinationPath "C:\arm"
+           echo "C:\arm\xpack-arm-none-eabi-gcc-13.2.1-1.1\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        
     - name: Setup Pico SDK
       run: |
         git clone https://github.com/raspberrypi/pico-sdk.git
