@@ -58,11 +58,14 @@ In this episode, I incorporate my TMS9918 library and create some test programs 
 
 ## Complete kits
 
-Complete PICO-56 kits are now available on Tindie:
+Complete PICO-56 kits are now available to purchase:
 
 <a href="https://www.tindie.com/stores/visrealm/?ref=offsite_badges&utm_source=sellers_visrealm&utm_medium=badges&utm_campaign=badge_large"><img src="https://cdn.tindiemedia.com/images/resize/aYF_NMOzpFobut8nNDlEHyrd5dg=/p/full-fit-in/1782x1336/i/214054/products/2024-02-08T05%3A21%3A57.401Z-kit-components.png?1707341274" height="480px"></img></a>
 
-<a href="https://www.tindie.com/stores/visrealm/?ref=offsite_badges&utm_source=sellers_visrealm&utm_medium=badges&utm_campaign=badge_large"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a>
+| Link | Store | Best For |
+  |------|-------|----------|
+  | <a href="https://lectronz.com/products/pico-56" alt="I sell on Lectronz"><img src="https://lectronz-images.b-cdn.net/static/badges/i-sell-on-lectronz-large.png" width="200" /></a> | Lectronz (visrealm) | All regions. Best choice for EU |
+  | <a href="https://www.tindie.com/products/visrealm/pico-56-kit"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a> | Tindie (visrealm) | All regions |
 
 Also featured in HackerBox 0103 for those in the US:
 
