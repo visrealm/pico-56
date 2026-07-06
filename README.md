@@ -65,7 +65,7 @@ Complete PICO-56 kits are now available to purchase:
 | Link | Store | Best For |
   |------|-------|----------|
   | <a href="https://lectronz.com/products/pico-56" alt="I sell on Lectronz"><img src="https://lectronz-images.b-cdn.net/static/badges/i-sell-on-lectronz-large.png" width="200" /></a> | Lectronz (visrealm) | All regions. Best choice for EU |
-  | <a href="https://www.tindie.com/products/visrealm/pico-56-kit"><img src="https://d2ss6ovg47m0r5.cloudfront.net/badges/tindie-larges.png" alt="I sell on Tindie" width="200" height="104"></a> | Tindie (visrealm) | All regions |
+  | <a href="https://www.tindie.com/products/visrealm/pico-56-kit"><img src="https://static.tindie.com/badges/tindie-mediums.png" alt="I sell on Tindie" width="200" height="104"></a> | Tindie (visrealm) | All regions |
 
 Also featured in HackerBox 0103 for those in the US:
 
